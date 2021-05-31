@@ -2,6 +2,7 @@
 #include <cstdint>
 #include "memory.h"
 
+//One day a girl will be impressed by this
 class CPU {
 	static constexpr uint16_t stackStart = 0x0100;
 	static constexpr uint16_t stackEnd =   0x01FF;
