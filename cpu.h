@@ -1,20 +1,22 @@
-#pragma once
 #include <cstdint>
 #include "memory.h"
+#include <string>
+
+#pragma once
 
 //One day a girl will be impressed by this
 class CPU {
 	static constexpr uint16_t stackStart = 0x0100;
 	static constexpr uint16_t stackEnd =   0x01FF;
 
-	uint16_t PC = stackEnd+1;
+	uint16_t PC;
 	/*SP is an offset from 0x0100, not an
 	absolute address, since the SP is only 8 bit*/
-	uint8_t SP =  0x00;
+	uint8_t SP;
 
-	uint8_t AC =  0;
-	uint8_t X =   0;
-	uint8_t Y =   0;
+	uint8_t AC;
+	uint8_t X;
+	uint8_t Y;
 
 	/*ST meaning StaTus register. Apparently
 	this is bad programming practice, because
@@ -36,12 +38,12 @@ class CPU {
 		uint8_t status;
 	} ST;
 
-	//Don't use a separate memory class for now
-	std::vector<uint8_t> memory;
+	Memory mem;
 
 	//Wipe all registers and memory
 	void initialize();
 
+	//Addressing modes
 public:
 	CPU();
 
