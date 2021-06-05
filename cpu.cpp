@@ -10,14 +10,14 @@ void CPU::initialize() {
 	Y =  0x00;
 	ST.status = 0x00;
 
-	mem = Memory(65536);
+	//Fix this shit later lol
+	//mem = Memory(65536);
 }
 //Implement later
 void CPU::loadProgram(std::string const& name) {};
 
 
 void CPU::executeCycle() {
-
 	switch(mem[PC]) {
 		/*Try optimizing this by making
 		the accumulator in a union with the
@@ -31,3 +31,9 @@ void CPU::executeCycle() {
 
 	}
 };
+
+#include <iostream>
+
+void CPU::testFunction() {
+	std::cout << (int) AddrIMM(16);
+}

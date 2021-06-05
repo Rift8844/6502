@@ -2,5 +2,6 @@
 #include "cpu.h"
 
 int main() {
-	CPU cpu();
+	CPU cpu;
+	cpu.testFunction();
 }

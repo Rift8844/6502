@@ -38,14 +38,22 @@ class CPU {
 		uint8_t status;
 	} ST;
 
-	Memory mem;
+	Memory mem = Memory(65536);
 
 	//Wipe all registers and memory
 	void initialize();
 
 	//Addressing modes
+
+	/*Immediate mode
+	The funny thing is that this code is completely
+	useless lmfao*/
+	//static inline uint16_t AddrIMM(uint16_t addr) { return addr; }
+
 public:
-	CPU();
+	CPU() { initialize(); }
+
+	void testFunction();
 
 	void loadProgram(std::string const& name);
 	void executeCycle();
