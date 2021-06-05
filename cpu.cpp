@@ -35,5 +35,5 @@ void CPU::executeCycle() {
 #include <iostream>
 
 void CPU::testFunction() {
-	std::cout << (int) AddrIMM(16);
+	//std::cout << (int) AddrIMM(16);
 }
