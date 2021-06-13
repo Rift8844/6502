@@ -48,7 +48,8 @@ class CPU {
 	/*Immediate mode
 	The funny thing is that this code is completely
 	useless lmfao*/
-	//static inline uint16_t AddrIMM(uint16_t addr) { return addr; }
+	inline uint8_t AddrABS(uint16_t arg);
+	inline uint8_t AddrABSidx(uint16_t arg, uint8_t idx);
 
 public:
 	CPU() { initialize(); }
