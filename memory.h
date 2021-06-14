@@ -21,6 +21,6 @@ public:
 
 
 	//Get in Little Endian format
-	uint8_t& getLE(uint16_t addr) { return (val << 8)|(val >> 8); }
-	uint8_t const getLE(uint16_t addr) const { return (val << 8)|(val >> 8); }
+	uint8_t& getLE(uint16_t addr) { return mem[(addr << 8)|(addr >> 8)]; }
+	uint8_t const getLE(uint16_t addr) const { return mem[(addr << 8)|(addr >> 8)]; }
 };

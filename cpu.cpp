@@ -35,21 +35,24 @@ void CPU::executeCycle() {
 };
 
 void CPU::testFunction() {
-	
+	mem[0x0000] = 0x01;
+	mem[0x0001] = 0x02;
+	mem[0x0002] = 0xFF;
+
+	std::cout << "0x0000 using absolute indexing adressing mode:\n" << 
+	(int) AddrABSidx(0x0100, 0x0001);
 }
 
 
+//ADDRESSING MODES
 
-//Address modes
-uint8_t& CPU::AddrABS(uint16_t arg) { return mem.getLE(arg); }
+
+uint8_t& CPU::AddrABS(uint16_t arg) { return mem[decodeLE(arg)]; }
 //ABSX and ABY
 uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) { 
-	uint16_t addr = arg+idx;
-	//Way to check if a carry occured
-	if (addr < arg)
-		ST.carry = true;
+	uint16_t addr = decodeLE(arg)+idx;
 
-	return mem.getLE(addr); 
+	return mem[addr]; 
 }
 
 /*This is completely fucking useless, and literally
@@ -60,34 +63,26 @@ uint8_t CPU::AddrIMD(uint8_t arg) { return arg; }
 for this one though*/
 uint8_t CPU::AddrIMP(uint8_t arg) { return 0; }
 
-uint8_t& CPU::AddrIND(uint16_t arg) { return mem[mem.getLE(arg)]; }
-uint8_t& CPU::AddrXIND(uint8_t idx, uint8_t arg) {
-	uint8_t addr = arg+idx;
-	if (addr < arg)
-		ST.carry = true;
-
-	return mem[mem[addr]];
+uint16_t CPU::AddrIND(uint16_t arg) { 
+	return fetchTwoByte(mem[decodeLE(arg)]);
 }
 
-uint8_t& CPU::AddrINDY(uint8_t arg, uint8_t idx) {
-	uint8_t addr = mem[arg];
-	uint8_t offsetAdr = addr+idx;
+uint16_t CPU::AddrXIND(uint8_t idx, uint8_t arg) {
+	uint8_t addr = arg+idx;
 
-	if (offsetAdr < addr)
-		ST.carry = true;
+	return fetchTwoByte(addr);
+}
 
-	return mem[offsetAddr];
+uint16_t CPU::AddrINDY(uint8_t arg, uint8_t idx) {
+	uint8_t baseAddr = mem[arg];
+	uint8_t targetAddr = addr+idx;
+
+	return fetchTwoByte(targetAddr);
 }
 
 //I think this is right..? INCOMPLETE
-uint16_t CPU::AddrREL(uint8_t arg) {
-	union {
-		int8_t signedOff;
-		uint8_t unsignedOff;
-	} offset;
-	offset.unsignedOff = arg;
-
-	return PC+offset.signedOff;
+uint16_t CPU::AddrREL(int8_t arg) {
+	return PC+2 + arg;
 }
 
 uint8_t& CPU::AddrZPG(uint8_t arg) {
@@ -95,13 +90,7 @@ uint8_t& CPU::AddrZPG(uint8_t arg) {
 }
 
 //ZPGX and ZPGY
-uint8_t& CPU::AddrZPGIDX(uint8_t arg, uint8_t idx) {
+uint8_t& CPU::AddrZPGidx(uint8_t arg, uint8_t idx) {
 	//Cast to one byte
 	return mem[(uint8_t) (arg+idx)];
 }
-
-
-
-
-
-//Now the instructions
