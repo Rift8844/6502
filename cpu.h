@@ -16,7 +16,7 @@ class CPU {
 	absolute address, since the SP is only 8 bit*/
 	uint8_t SP;
 
-	uint8_t AC;
+	uint8_t A;
 	uint8_t X;
 	uint8_t Y;
 
@@ -90,6 +90,36 @@ class CPU {
 
 
 
+	void LD(uint8_t& reg, uint8_t val);
+	void LDA(uint8_t val);
+	void LDX(uint8_t val);
+	void LDY(uint8_t val);
+
+
+	void STA(uint8_t& loc);
+	void STX(uint8_t& loc);
+	void STY(uint8_t& loc);
+
+
+	void TR(uint8_t& lval, uint8_t rval);
+	void TAX();
+	void TAY();
+	void TXA();
+	void TYA();
+
+
+	void TSX();
+	void TXS();
+	void PHA();
+	void PHP();
+	void PLA();
+	void PLP();
+
+
+	void AND(uint8_t m);
+	void EOR(uint8_t m);
+	void ORA(uint8_t m);
+	void BIT(uint8_t m);
 
 public:
 	CPU() { initialize(); }

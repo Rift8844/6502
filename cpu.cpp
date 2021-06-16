@@ -6,7 +6,7 @@ void CPU::initialize() {
 
 	PC = stackEnd+1;
 	SP = 0x00;
-	AC = 0x00;
+	A =  0x00;
 	X =  0x00;
 	Y =  0x00;
 	ST.status = 0x00;
@@ -91,3 +91,73 @@ uint8_t& CPU::AddrZPGidx(uint8_t arg, uint8_t idx) {
 	return mem[(uint8_t) (arg+idx)];
 }
 
+
+
+
+
+//INSTRUCTIONS
+
+
+void CPU::LD(uint8_t& reg, uint8_t val) {
+	reg = val;
+	ST.zero = val == 0;
+	ST.negative = val & 0b10000000;
+}
+void CPU::LDA(uint8_t val) { LD(A, val); }
+void CPU::LDX(uint8_t val) { LD(X, val); }
+void CPU::LDY(uint8_t val) { LD(Y, val); }
+
+
+void CPU::STA(uint8_t& loc) { loc = A; }
+void CPU::STX(uint8_t& loc) { loc = X; }
+void CPU::STY(uint8_t& loc) { loc = Y; }
+
+
+void CPU::TR(uint8_t& lval, uint8_t rval) {
+	lval = rval;
+	ST.zero = lval == 0;
+	ST.negative = lval & 0b10000000;
+}
+void CPU::TAX() { TR(X, A); }
+void CPU::TAY() { TR(Y, A); }
+void CPU::TXA() { TR(A, X); }
+void CPU::TYA() { TR(A, Y); }
+
+
+void CPU::TSX() { 
+	X = SP;
+	ST.zero = X == 0;
+	ST.negative = X & 0b10000000;
+}
+void CPU::TXS() { SP = X; }
+void CPU::PHA() { SP++; mem[SP] = A; }
+void CPU::PHP() { SP++; mem[SP] = ST.status; }
+void CPU::PLA() { 
+	A = mem[SP]; 
+	SP--; 
+	ST.zero = A == 0;
+	ST.negative = A & 0b10000000;
+} 
+void CPU::PLP() { ST.status = mem[SP]; SP--; }
+
+
+void CPU::AND(uint8_t m) {
+	A = A && m;
+	ST.zero = A == 0;
+	ST.negative = A & 0b10000000;
+}
+void CPU::EOR(uint8_t m) {
+	A = !(A || m);
+	ST.zero = A == 0;
+	ST.negative = A & 0b10000000;
+}
+void CPU::ORA(uint8_t m) {
+	A = A || m;
+	ST.zero = A == 0;
+	ST.negative = A & 0b10000000;
+}
+void CPU::BIT(uint8_t m) { 
+	ST.zero = !(A & m);
+	ST.overflow = m & 0b01000000;
+	ST.negative = m & 0b10000000;
+}
