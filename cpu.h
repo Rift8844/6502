@@ -4,7 +4,9 @@
 
 #pragma once
 
-//One day a girl will be impressed by this
+/*I think women are special creatures. They seem to follow
+certain observable patterns, more extreme then the ones
+exhibited by male neurotypicals.*/
 class CPU {
 	static constexpr uint16_t stackStart = 0x0100;
 	static constexpr uint16_t stackEnd =   0x01FF;
@@ -42,10 +44,27 @@ class CPU {
 	void initialize();
 
 	/*Fetch two bytes of data, which are needed
-	in some cases*/
-	uint16_t  fetchTwoByte(uint16_t addr) const { return (mem[addr] << 8) | mem[addr+1]; }
+	in some cases. Fetchtwobyte uses little endian, and preserves
+	the page number.*/
+	uint16_t fetchTwoByte(uint16_t addr) const { 
+		uint16_t val = mem[addr];
+		addr++;
+
+		if (addr&0x00FF == 0x00)
+			addr -= 0x0100;
+
+		val |= mem[addr]<<8;
+		return val; 
+	}
+
+	/*uint16_t old_fetchTwoByte(uint16_t addr) const { 
+		return mem[addr] | (mem[addr&0xFF00 & ((addr+1)&0x00FF)] << 8); 
+	}*/
+
+
+
 	//Decode an address as little endian
-	uint16_t decodeLE(uint16_t addr) { return (addr << 8)|(addr >> 8); }
+	uint16_t decodeLE(uint16_t addr) const { return (addr << 8)|(addr >> 8); }
 
 
 	//Addressing mode implementations
@@ -60,16 +79,16 @@ class CPU {
 	uint16_t AddrIND(uint16_t arg);
 	uint8_t& AddrXIND(uint8_t idx, uint8_t arg);
 	uint8_t& AddrINDY(uint8_t arg, uint8_t idx);
-	uint16_t AddrREL(uint8_t arg);
+	uint16_t AddrREL(int8_t arg);
 	uint8_t& AddrZPG(uint8_t arg);
 	//ZPGX and ZPGY
-	uint8_t& AddrZPGIDX(uint8_t arg, uint8_t idx);
+	uint8_t& AddrZPGidx(uint8_t arg, uint8_t idx);
 
 	//Instructions
 	/*Implemented in order, as listed on 
 	www.obelisk.me.uk/6502/instructions.html*/
 
-	
+
 
 
 public:

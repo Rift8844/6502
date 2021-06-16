@@ -46,8 +46,7 @@ void CPU::testFunction() {
 
 //ADDRESSING MODES
 
-
-uint8_t& CPU::AddrABS(uint16_t arg) { return mem[decodeLE(arg)]; }
+uint8_t& CPU::AddrABS(uint16_t arg) { return mem.getLE(arg); }
 //ABSX and ABY
 uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) { 
 	uint16_t addr = decodeLE(arg)+idx;
@@ -64,20 +63,17 @@ for this one though*/
 uint8_t CPU::AddrIMP(uint8_t arg) { return 0; }
 
 uint16_t CPU::AddrIND(uint16_t arg) { 
-	return fetchTwoByte(mem[decodeLE(arg)]);
+	return fetchTwoByte(arg);
 }
 
-uint16_t CPU::AddrXIND(uint8_t idx, uint8_t arg) {
-	uint8_t addr = arg+idx;
-
-	return fetchTwoByte(addr);
+uint8_t& CPU::AddrXIND(uint8_t idx, uint8_t arg) {
+	return mem[fetchTwoByte((uint8_t) arg+idx)];
 }
 
-uint16_t CPU::AddrINDY(uint8_t arg, uint8_t idx) {
-	uint8_t baseAddr = mem[arg];
-	uint8_t targetAddr = addr+idx;
+uint8_t& CPU::AddrINDY(uint8_t arg, uint8_t idx) {
+	uint16_t baseAddr = fetchTwoByte(arg);
 
-	return fetchTwoByte(targetAddr);
+	return mem[baseAddr+idx];
 }
 
 //I think this is right..? INCOMPLETE
@@ -94,3 +90,4 @@ uint8_t& CPU::AddrZPGidx(uint8_t arg, uint8_t idx) {
 	//Cast to one byte
 	return mem[(uint8_t) (arg+idx)];
 }
+
