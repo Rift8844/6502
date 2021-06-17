@@ -25,15 +25,16 @@ class CPU {
 	this is endian dependent, and it's
 	technically UB.*/
 	union {
-		bool carry;
-		bool zero;
-		bool interrupt;
-		bool decimal;
-		bool brk;
+
+		bool negative;
+		bool overflow;
 		//Reserved does nothing lmfao
 		bool reserved;
-		bool overflow;
-		bool negative;
+		bool brk;
+		bool decimal;
+		bool interrupt;
+		bool zero;
+		bool carry;
 
 		uint8_t status;
 	} ST;
@@ -89,6 +90,7 @@ class CPU {
 	www.obelisk.me.uk/6502/instructions.html*/
 
 
+	void updateST(uint8_t reg, uint8_t flags);
 
 	void LD(uint8_t& reg, uint8_t val);
 	void LDA(uint8_t val);

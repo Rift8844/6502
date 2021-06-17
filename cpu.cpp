@@ -94,7 +94,17 @@ uint8_t& CPU::AddrZPGidx(uint8_t arg, uint8_t idx) {
 
 
 
+/*void CPU::updateST(uint8_t reg, uint8_t flags) {  
 
+	if (flags&0x01)
+		ST.negative = reg&0x80;
+
+	//Can't implement overflow flag
+	//if (flags&0x02)
+
+	if (flags&0x10)
+
+}*/
 //INSTRUCTIONS
 
 
@@ -106,11 +116,10 @@ void CPU::LD(uint8_t& reg, uint8_t val) {
 void CPU::LDA(uint8_t val) { LD(A, val); }
 void CPU::LDX(uint8_t val) { LD(X, val); }
 void CPU::LDY(uint8_t val) { LD(Y, val); }
-
-
 void CPU::STA(uint8_t& loc) { loc = A; }
 void CPU::STX(uint8_t& loc) { loc = X; }
 void CPU::STY(uint8_t& loc) { loc = Y; }
+
 
 
 void CPU::TR(uint8_t& lval, uint8_t rval) {
@@ -122,6 +131,7 @@ void CPU::TAX() { TR(X, A); }
 void CPU::TAY() { TR(Y, A); }
 void CPU::TXA() { TR(A, X); }
 void CPU::TYA() { TR(A, Y); }
+
 
 
 void CPU::TSX() { 
@@ -139,6 +149,7 @@ void CPU::PLA() {
 	ST.negative = A & 0b10000000;
 } 
 void CPU::PLP() { ST.status = mem[SP]; SP--; }
+
 
 
 void CPU::AND(uint8_t m) {
@@ -161,3 +172,151 @@ void CPU::BIT(uint8_t m) {
 	ST.overflow = m & 0b01000000;
 	ST.negative = m & 0b10000000;
 }
+
+
+
+void CPU::ADC(uint8_t m) {
+	uint8_t sum = A + m + ST.carry;
+
+	if (sum < A)
+		ST.carry = true;
+
+	/*If the signs of both operands
+	isn't equal to the result, there was
+	an overflow*/
+	ST.overflow = (A^sum)&(m^sum)&0x80;
+
+	A = sum;
+}
+void CPU::SBC(uint8_t m) {
+	uint8_t diff = A - m - !ST.carry;
+
+	if (diff > A)
+		ST.carry = true;
+
+	ST.overflow = (A^sum)&(m^sum)&0x80;
+
+	A = diff;
+}
+void CPU::CP(uint8_t reg, uint8_t m) {
+	ST.carry = reg >= m;
+	ST.zero = reg == m;
+	ST.negative = reg < m;
+}
+void CPU::CMP(uint8_t m) { CP(A, m); }
+void CPU::CPX(uint8_t m) { CP(X, m); }
+void CPU::CPY(uint8_t m) { CP(Y, m); }
+
+
+
+void CPU::INC(uint8_t& val) {
+	val++;
+	ST.negative = val < 0;
+	ST.zero = val == 0;
+}
+void CPU::INX() { INC(X); }
+void CPU::INY() { INC(Y); }
+void CPU::DEC(uint8_t& val) {
+	val--;
+	ST.negative = val < 0;
+	ST.zero = val == 0;
+}
+void CPU::DEX() { DEC(X); }
+void CPU::DEY() { DEC(Y); }
+
+
+
+void CPU::ASL(uint8_t& val) {
+	ST.carry = val&0x80;
+	val <<= 1;
+}
+void CPU::LSR(uint8_t& val) {
+	ST.carry = val&0x01;
+	val >>= 1;
+}
+void CPU::ROL(uint8_t& val) {
+	bool oldCarry = ST.carry;
+	ST.carry = val&0x80;
+	val <<= 1;
+	val &= 0xFE | oldCarry;
+}
+void CPU::ROR(uint8_t& val) {
+	bool oldCarry = ST.carry;
+	ST.carry = val&0x01;
+	val >>= 1;
+	val &= 0x7F|ST.carry;
+}
+
+
+
+void CPU::JMP(uint16_t loc) {
+	PC = loc;
+}
+void CPU::JSR(uint16_t loc) {
+	SP++;
+	mem[SP] = PC;
+	PC = loc;
+}
+void CPU::RTS(uint8_t STAYYYYYNOIIIIIDED_YUHHHHHHHHHHHHHHH_IVE_SEEN_NOIDEDD_IVE_SEEEN_NOIIDDEDD__IVE_SEEN_NOIIDED__IVE__SEEN__IVVEEEEE__SEEEEENN__FOOTAAGGEEEEEEEEEEEEEEEEEEEEEE____) {
+	PC = mem[SP] | ;
+	SP--;
+}
+
+
+
+void CPU::BCC(int8_t br) {
+	if (ST.clear)
+		PC = br;
+}
+void CPU::BCS(int8_t br) {
+	if (!ST.clear)
+		PC = br;
+}
+void CPU::BEQ(int8_t br) {
+	if (ST.zero)
+		PC = br;
+}
+void CPU::BMI(int8_t br) {
+	if (ST.negative)
+		PC = br;
+}
+void CPU::BPL(int8_t br) {
+	if (!ST.negative)
+		PC = br;
+}
+void CPU::BVC(int8_t br) {
+	if (!ST.overflow)
+		PC = br;
+}
+void CPU::BVS(int8_t br) {
+	if (ST.overflow)
+		PC = br;
+}
+
+
+
+
+void CPU::CLC(uint8_t implied) {
+	ST.carry = false;
+}
+void CPU::CLD(uint8_t implied) {
+	ST.decimal = false;
+}
+void CPU::CLI(uint8_t tailpipe_draggin__volume_blastin__bailin_out_my_brain_____red_light_flash_____dem_stop_i_smash_____abraxas__hydroplane__massive__) {
+	ST.interrupt = false;
+}
+void CPU::CLV(uint8_t implied) {
+	ST.overflow = false;
+}
+void CPU::SEC(uint8_t implied) {
+	ST.carry = true;
+}
+void CPU::SED(uint8_t implied) {
+	ST.decimal = true;
+}
+void CPU::SEI(uint8_t implied) {
+	ST.interrupt = true;
+}
+
+
+
