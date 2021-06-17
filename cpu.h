@@ -76,7 +76,7 @@ class CPU {
 	uint8_t  AddrIMD(uint8_t arg);
 	/*Look into later, I don't think anything is needed
 	for this one though*/
-	uint8_t  AddrIMP(uint8_t arg);
+	uint8_t  AddrIMP();
 	uint16_t AddrIND(uint16_t arg);
 	uint8_t& AddrXIND(uint8_t idx, uint8_t arg);
 	uint8_t& AddrINDY(uint8_t arg, uint8_t idx);
@@ -98,30 +98,92 @@ class CPU {
 	void LDY(uint8_t val);
 
 
+
 	void STA(uint8_t& loc);
 	void STX(uint8_t& loc);
 	void STY(uint8_t& loc);
 
 
+
 	void TR(uint8_t& lval, uint8_t rval);
-	void TAX();
-	void TAY();
-	void TXA();
-	void TYA();
+	void TAX(uint8_t implied);
+	void TAY(uint8_t implied);
+	void TXA(uint8_t implied);
+	void TYA(uint8_t implied);
 
 
-	void TSX();
-	void TXS();
-	void PHA();
-	void PHP();
-	void PLA();
-	void PLP();
+
+	void TSX(uint8_t implied);
+	void TXS(uint8_t implied);
+	void PHA(uint8_t implied);
+	void PHP(uint8_t implied);
+	void PLA(uint8_t implied);
+	void PLP(uint8_t implied);
+
 
 
 	void AND(uint8_t m);
 	void EOR(uint8_t m);
 	void ORA(uint8_t m);
 	void BIT(uint8_t m);
+
+
+
+	void ADC(uint8_t m);
+	void SBC(uint8_t m);
+	void CP(uint8_t reg, uint8_t m);
+	void CMP(uint8_t m);
+	void CPX(uint8_t m);
+	void CPY(uint8_t m);
+
+
+
+	void INC(uint8_t& val);
+	void INX(uint8_t implied);
+	void INY(uint8_t implied);
+	void DEC(uint8_t& val);
+	void DEX(uint8_t implied);
+	void DEY(uint8_t implied);
+
+
+
+	void ASL(uint8_t& val);
+	void LSR(uint8_t& val);
+	void ROL(uint8_t& val);
+	void ROR(uint8_t& val);
+
+
+
+	void JMP(uint16_t loc);
+	void JSR(uint16_t loc);
+	//I'm just gonna leave it at "uint8_t" lmao
+	void RTS(uint8_t);
+
+
+
+	void BCC(int8_t br);
+	void BCS(int8_t br);
+	void BEQ(int8_t br);
+	void BMI(int8_t br);
+	void BPL(int8_t br);
+	void BVC(int8_t br);
+	void BVS(int8_t br);
+
+
+
+	void CLC(uint8_t implied);
+	void CLD(uint8_t implied);
+	void CLI(uint8_t implied);
+	void CLV(uint8_t implied);
+	void SEC(uint8_t implied);
+	void SED(uint8_t implied);
+	void SEI(uint8_t implied);
+
+
+
+	void BRK(uint8_t implied);
+	void NOP(uint8_t);
+	void RTI(uint8_t implied);
 
 public:
 	CPU() { initialize(); }

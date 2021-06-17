@@ -60,7 +60,7 @@ it lmfao*/
 uint8_t CPU::AddrIMD(uint8_t arg) { return arg; }
 /*Look into later, I don't think anything is needed
 for this one though*/
-uint8_t CPU::AddrIMP(uint8_t arg) { return 0; }
+uint8_t CPU::AddrIMP() { return 0; }
 
 uint16_t CPU::AddrIND(uint16_t arg) { 
 	return fetchTwoByte(arg);
@@ -127,28 +127,28 @@ void CPU::TR(uint8_t& lval, uint8_t rval) {
 	ST.zero = lval == 0;
 	ST.negative = lval & 0b10000000;
 }
-void CPU::TAX() { TR(X, A); }
-void CPU::TAY() { TR(Y, A); }
-void CPU::TXA() { TR(A, X); }
-void CPU::TYA() { TR(A, Y); }
+void CPU::TAX(uint8_t implied) { TR(X, A); }
+void CPU::TAY(uint8_t implied) { TR(Y, A); }
+void CPU::TXA(uint8_t implied) { TR(A, X); }
+void CPU::TYA(uint8_t implied) { TR(A, Y); }
 
 
 
-void CPU::TSX() { 
+void CPU::TSX(uint8_t implied) { 
 	X = SP;
 	ST.zero = X == 0;
 	ST.negative = X & 0b10000000;
 }
-void CPU::TXS() { SP = X; }
-void CPU::PHA() { SP++; mem[SP] = A; }
-void CPU::PHP() { SP++; mem[SP] = ST.status; }
-void CPU::PLA() { 
+void CPU::TXS(uint8_t implied) { SP = X; }
+void CPU::PHA(uint8_t implied) { SP++; mem[SP] = A; }
+void CPU::PHP(uint8_t implied) { SP++; mem[SP] = ST.status; }
+void CPU::PLA(uint8_t implied) { 
 	A = mem[SP]; 
 	SP--; 
 	ST.zero = A == 0;
 	ST.negative = A & 0b10000000;
 } 
-void CPU::PLP() { ST.status = mem[SP]; SP--; }
+void CPU::PLP(uint8_t implied) { ST.status = mem[SP]; SP--; }
 
 
 
@@ -194,7 +194,7 @@ void CPU::SBC(uint8_t m) {
 	if (diff > A)
 		ST.carry = true;
 
-	ST.overflow = (A^sum)&(m^sum)&0x80;
+	ST.overflow = (A^diff)&(m^diff)&0x80;
 
 	A = diff;
 }
@@ -214,15 +214,15 @@ void CPU::INC(uint8_t& val) {
 	ST.negative = val < 0;
 	ST.zero = val == 0;
 }
-void CPU::INX() { INC(X); }
-void CPU::INY() { INC(Y); }
+void CPU::INX(uint8_t implied) { INC(X); }
+void CPU::INY(uint8_t implied) { INC(Y); }
 void CPU::DEC(uint8_t& val) {
 	val--;
 	ST.negative = val < 0;
 	ST.zero = val == 0;
 }
-void CPU::DEX() { DEC(X); }
-void CPU::DEY() { DEC(Y); }
+void CPU::DEX(uint8_t implied) { DEC(X); }
+void CPU::DEY(uint8_t implied) { DEC(Y); }
 
 
 
@@ -253,23 +253,25 @@ void CPU::JMP(uint16_t loc) {
 	PC = loc;
 }
 void CPU::JSR(uint16_t loc) {
-	SP++;
-	mem[SP] = PC;
+	SP += 2;
+	//Store the stack pointer as little endian
+	mem[SP-1] = PC | 0xFF00;
+	mem[SP] = PC | 0x00FF;
 	PC = loc;
 }
 void CPU::RTS(uint8_t STAYYYYYNOIIIIIDED_YUHHHHHHHHHHHHHHH_IVE_SEEN_NOIDEDD_IVE_SEEEN_NOIIDDEDD__IVE_SEEN_NOIIDED__IVE__SEEN__IVVEEEEE__SEEEEENN__FOOTAAGGEEEEEEEEEEEEEEEEEEEEEE____) {
-	PC = mem[SP] | ;
-	SP--;
+	PC = mem[SP-1]<<8 | mem[SP];
+	SP -= 2;
 }
 
 
 
 void CPU::BCC(int8_t br) {
-	if (ST.clear)
+	if (ST.carry)
 		PC = br;
 }
 void CPU::BCS(int8_t br) {
-	if (!ST.clear)
+	if (!ST.carry)
 		PC = br;
 }
 void CPU::BEQ(int8_t br) {
@@ -302,7 +304,7 @@ void CPU::CLC(uint8_t implied) {
 void CPU::CLD(uint8_t implied) {
 	ST.decimal = false;
 }
-void CPU::CLI(uint8_t tailpipe_draggin__volume_blastin__bailin_out_my_brain_____red_light_flash_____dem_stop_i_smash_____abraxas__hydroplane__massive__) {
+void CPU::CLI(uint8_t implied) {
 	ST.interrupt = false;
 }
 void CPU::CLV(uint8_t implied) {
@@ -319,3 +321,17 @@ void CPU::SEI(uint8_t implied) {
 }
 
 
+
+void CPU::BRK(uint8_t implied) {
+	SP += 2;
+	mem[SP-1] = PC | 0xFF00;
+	mem[SP] = PC | 0x00FF;
+	PHP(AddrIMP());
+	PC = mem[0xFF]<<8 | mem[0xFE];
+	ST.brk = true;
+}
+void CPU::NOP(uint8_t You__might_think_he__loves_you_for_your_money_but_I_know_what_he_really_loves_you_for__its___your_BRAND___N3W_LEOPARD_SKIN_PILLBOX_HAT) {};
+void CPU::RTI(uint8_t implied) {
+	PLP(AddrIMP());
+	PC = mem[SP-1]<<8 | mem[SP];
+}
