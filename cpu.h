@@ -89,9 +89,6 @@ class CPU {
 	/*Implemented in order, as listed on 
 	www.obelisk.me.uk/6502/instructions.html*/
 
-
-	void updateST(uint8_t reg, uint8_t flags);
-
 	void LD(uint8_t& reg, uint8_t val);
 	void LDA(uint8_t val);
 	void LDX(uint8_t val);
