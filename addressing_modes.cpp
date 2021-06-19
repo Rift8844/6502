@@ -6,8 +6,11 @@ uint8_t& CPU::AddrABS(uint16_t arg) { return mem.getLE(arg); }
 uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) { 
 	uint16_t addr = decodeLE(arg)+idx;
 
-	return mem[addr]; 
+	return mem[addr];
 }
+inline uint8_t& CPU::AddrABSX(uint16_t arg) { return AddrABSidx(arg, X); }
+inline uint8_t& CPU::AddrABSY(uint16_t arg) { return AddrABSidx(arg, Y); }
+
 
 /*This is completely fucking useless, and literally
 does nothing except return the same byte you passed to
@@ -41,7 +44,9 @@ uint8_t& CPU::AddrZPG(uint8_t arg) {
 }
 
 //ZPGX and ZPGY
-uint8_t& CPU::AddrZPGidx(uint8_t arg, uint8_t idx) {
+inline uint8_t& CPU::AddrZPGidx(uint8_t arg, uint8_t idx) {
 	//Cast to one byte
 	return mem[(uint8_t) (arg+idx)];
 }
+uint8_t& CPU::AddrZPGX(uint8_t arg) { return AddrZPGidx(arg, X); }
+uint8_t& CPU::AddrZPGY(uint8_t arg) { return AddrZPGidx(arg, Y); }

@@ -73,6 +73,9 @@ class CPU {
 	uint8_t& AddrABS(uint16_t arg);
 	//ABSX and ABY
 	uint8_t& AddrABSidx(uint16_t arg, uint8_t idx);
+	uint8_t& AddrABSX(uint16_t arg);
+	uint8_t& AddrABSY(uint16_t arg);
+
 	uint8_t  AddrIMD(uint8_t arg);
 	/*Look into later, I don't think anything is needed
 	for this one though*/
