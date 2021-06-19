@@ -1,5 +1,6 @@
 #include <cstdint>
 #include <vector>
+#include <iostream>
 
 #pragma once
 
@@ -19,8 +20,9 @@ public:
 	uint8_t& operator[](uint16_t idx) { return addrStart[idx]; }
 	uint8_t const operator[](uint16_t idx) const { return addrStart[idx]; }
 
-
 	//Get in Little Endian format
 	uint8_t& getLE(uint16_t addr) { return mem[(addr << 8)|(addr >> 8)]; }
 	uint8_t const getLE(uint16_t addr) const { return mem[(addr << 8)|(addr >> 8)]; }
+
+	void loadState(std::istream& is);
 };
