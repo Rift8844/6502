@@ -1,5 +1,7 @@
-#include <cstdint>
+
 #include "memory.h"
+
+#include <cstdint>
 #include <string>
 
 #pragma once
@@ -38,8 +40,6 @@ class CPU {
 
 		uint8_t status;
 	} ST;
-
-	Memory mem = Memory(65536);
 
 	//Wipe all registers and memory
 	void initialize();
@@ -84,6 +84,8 @@ class CPU {
 	uint8_t& AddrZPG(uint8_t arg);
 	//ZPGX and ZPGY
 	uint8_t& AddrZPGidx(uint8_t arg, uint8_t idx);
+	uint8_t& AddrZPGX(uint8_t arg);
+	uint8_t& AddrZPGY(uint8_t arg);
 
 	//Instructions
 	/*Implemented in order, as listed on 
@@ -183,6 +185,8 @@ class CPU {
 	void RTI(uint8_t implied);
 
 public:
+	Memory mem = Memory(65536);
+
 	CPU() { initialize(); }
 
 	void testFunction();

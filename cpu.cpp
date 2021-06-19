@@ -25,23 +25,12 @@ void CPU::executeCycle() {
 		the accumulator in a union with the
 		carry bit, so you only have to do one
 		instruction!*/
-		
-		//ADC Instructions
-		case 0x69: {
-			
-		}
+
 
 	}
 };
 
-void CPU::testFunction() {
-	mem[0x0000] = 0x01;
-	mem[0x0001] = 0x02;
-	mem[0x0002] = 0xFF;
-
-	std::cout << "0x0000 using absolute indexing adressing mode:\n" << 
-	(int) AddrABSidx(0x0100, 0x0001);
-}
+void CPU::testFunction() {}
 
 
 
