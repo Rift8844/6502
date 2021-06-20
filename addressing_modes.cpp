@@ -8,14 +8,14 @@ uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) {
 
 	return mem[addr];
 }
-inline uint8_t& CPU::AddrABSX(uint16_t arg) { return AddrABSidx(arg, X); }
-inline uint8_t& CPU::AddrABSY(uint16_t arg) { return AddrABSidx(arg, Y); }
+uint8_t& CPU::AddrABSX(uint16_t arg) { return AddrABSidx(arg, X); }
+uint8_t& CPU::AddrABSY(uint16_t arg) { return AddrABSidx(arg, Y); }
 
 
 /*This is completely fucking useless, and literally
 does nothing except return the same byte you passed to
 it lmfao*/
-inline uint8_t& CPU::AddrIMD(uint8_t arg) { return arg; }
+uint8_t CPU::AddrIMD(uint8_t arg) { return arg; }
 /*Look into later, I don't think anything is needed
 for this one though*/
 uint8_t CPU::AddrIMP() { return 0; }

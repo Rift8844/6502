@@ -47,19 +47,21 @@ void CPU::executeCycle() {
 			LDA(AddrABS((mem[PC]-1)<<8 | mem[PC]));
 		}
 		case 0xBD: {
-			LDA(AddrABSX(mem[PC]));
+			PC += 2;
+			LDA(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0xB9: {
-			LDA(AddrABSY(mem[PC]));
+			PC += 2;
+			LDA(AddrABSY(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0xA1: {
+			PC++;
 			LDA(AddrXIND(mem[PC]));
 		}
 		case 0xB1: {
 			PC++;
 			LDA(AddrINDY(mem[PC]));
 		}
-
 
 		//LDX
 		case 0xA2: {
@@ -80,8 +82,8 @@ void CPU::executeCycle() {
 			LDX(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0xBE: {
-			PC++;
-			LDX(AddrABSY(mem[PC]));
+			PC += 2;
+			LDX(AddrABSY(mem[PC-1]<<8 | mem[PC]));
 		}
 
 		//LDY
@@ -103,8 +105,8 @@ void CPU::executeCycle() {
 			LDY(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0xBC: {
-			PC++;
-			LDY(AddrABSX(mem[PC]));
+			PC += 2;
+			LDY(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 
 
@@ -123,12 +125,12 @@ void CPU::executeCycle() {
 			STA(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x9D: {
-			PC++;
-			STA(AddrABSX(mem[PC]));
+			PC += 2;
+			STA(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x99: {
-			PC++;
-			STA(AddrABSY(mem[PC]));
+			PC += 2;
+			STA(AddrABSY(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x81: {
 			PC++;
@@ -179,14 +181,21 @@ void CPU::executeCycle() {
 			TAY(AddrIMP());
 		}
 
-		//TSX
-		case 0xBA: {
-			TSX(AddrIMP());
-		}
-
 		//TXA
 		case 0x8A: {
 			TXA(AddrIMP());
+		}
+
+		//TYA
+		case 0x98: {
+			TYA(AddrIMP());
+		}
+
+
+	//STACK OPERATION INSTRUCTIONS
+		//TSX
+		case 0xBA: {
+			TSX(AddrIMP());
 		}
 
 		//TXS
@@ -194,9 +203,136 @@ void CPU::executeCycle() {
 			TXS(AddrIMP());
 		}
 
-		//TYA
-		case 0x98: {
-			TYA(AddrIMP());
+		//PHA
+		case 0x48: {
+			PHA(AddrIMP());
+		}
+
+		//PHP
+		case 0x08: {
+			PHP(AddrIMP());
+		}
+
+		//PLA
+		case 0x68: {
+			PLA(AddrIMP());
+		}
+
+		//PLP
+		case 0x28: {
+			PLP(AddrIMP());
+		}
+
+
+	//LOGCAL INSTRUCTIONS
+		//AND
+		case 0x29: {
+			PC++;
+			AND(AddrIMD(mem[PC]));
+		}
+		case 0x25: {
+			PC++;
+			AND(AddrZPG(mem[PC]));
+		}
+		case 0x35: {
+			PC++;
+			AND(AddrZPGX(mem[PC]));
+		}
+		case 0x2D: {
+			PC += 2;
+			AND(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x3D: {
+			PC += 2;
+			AND(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x39: {
+			PC += 2;
+			AND(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x21: {
+			PC++;
+			AND(AddrXIND(mem[PC]));
+		}
+		case 0x31: {
+			AND(AddrINDY(mem[PC]));
+		}
+		
+		//EOR
+		case 0x49: {
+			PC++;
+			EOR(AddrIMD(mem[PC]));
+		}
+		case 0x45: {
+			PC++;
+			EOR(AddrZPG(mem[PC]));
+		}
+		case 0x55: {
+			PC++;
+			EOR(AddrZPGX(mem[PC]));
+		}
+		case 0x4D: {
+			PC += 2;
+			EOR(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x5D: {
+			PC += 2;
+			EOR(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x59: {
+			PC += 2;
+			EOR(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x41: {
+			PC++;
+			EOR(AddrXIND(mem[PC]));
+		}
+		case 0x51: {
+			PC++;
+			EOR(AddrINDY(mem[PC]));
+		}
+
+		//ORA
+		case 0x09: {
+			PC++;
+			ORA(AddrIMD(mem[PC]));
+		}
+		case 0x05: {
+			PC++;
+			ORA(AddrZPG(mem[PC]));
+		}
+		case 0x15: {
+			PC++;
+			ORA(AddrZPGX(mem[PC]));
+		}
+		case 0x0D: {
+			PC += 2;
+			ORA(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x1D: {
+			PC += 2;
+			ORA(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x19: {
+			PC += 2;
+			ORA(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x01: {
+			PC++;
+			ORA(AddrXIND(mem[PC]));
+		}
+		case 0x11: {
+			PC++;
+			ORA(AddrINDY(mem[PC]));
+		}
+
+		//BIT
+		case 0x24: {
+			PC++;
+			BIT(AddrZPG(mem[PC]));
+		}
+		case 0x2C: {
+			BIT(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 	}
 };

@@ -76,13 +76,13 @@ class CPU {
 	uint8_t& AddrABSX(uint16_t arg);
 	uint8_t& AddrABSY(uint16_t arg);
 
-	uint8_t&  AddrIMD(uint8_t arg);
+	uint8_t  AddrIMD(uint8_t arg);
 	/*Look into later, I don't think anything is needed
 	for this one though*/
 	uint8_t  AddrIMP();
 	uint16_t AddrIND(uint16_t arg);
-	uint8_t& AddrXIND(uint8_t idx, uint8_t arg);
-	uint8_t& AddrINDY(uint8_t arg, uint8_t idx);
+	uint8_t& AddrXIND(uint8_t arg);
+	uint8_t& AddrINDY(uint8_t arg);
 	uint16_t AddrREL(int8_t arg);
 	uint8_t& AddrZPG(uint8_t arg);
 	//ZPGX and ZPGY
