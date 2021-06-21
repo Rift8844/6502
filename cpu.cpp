@@ -604,6 +604,23 @@ void CPU::executeCycle() {
 		case 0x78: {
 			SEI(AddrIMP());
 		}
+
+
+	//SYSTEM FUNCTION OPCODES
+		//BRK
+		case 0x00: {
+			BRK(AddrIMP());
+		}
+
+		//NOP
+		case 0xEA: {
+			NOP(AddrIMP());
+		}
+
+		//RTI
+		case 0x40: {
+			RTI(AddrIMP());
+		}
 	}
 
 	PC++;
