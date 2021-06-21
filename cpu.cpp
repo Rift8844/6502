@@ -27,7 +27,7 @@ void CPU::executeCycle() {
 		instruction!*/
 		
 
-	//LOAD INSTRUCTIONS
+	//LOAD OPCODES
 		//LDA
 		case 0xA9: {
 			PC++;
@@ -110,7 +110,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//STORE INSTRUCTIONS
+	//STORE OPCODES
 		//STA
 		case 0x85: {
 			PC++;
@@ -170,7 +170,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//REGISTER TRANSFER INSTRUCTIONS
+	//REGISTER TRANSFER OPCODES
 		//TAX
 		case 0xAA: {
 			TAX(AddrIMP());
@@ -192,7 +192,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//STACK OPERATION INSTRUCTIONS
+	//STACK OPERATION OPCODES
 		//TSX
 		case 0xBA: {
 			TSX(AddrIMP());
@@ -224,7 +224,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//LOGCAL INSTRUCTIONS
+	//LOGCAL OPCODES
 		//AND
 		case 0x29: {
 			PC++;
@@ -337,7 +337,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//ARITHMETIC INSTRUCTIONS
+	//ARITHMETIC OPCODES
 		//ADC
 
 		//69... NIIICCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE!!!
@@ -359,7 +359,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//INCREMENT AND DECREMENT INSTRUCTIONS
+	//INCREMENT AND DECREMENT OPCODES
 		//INC
 		case 0xE6: {
 			PC++;
@@ -419,7 +419,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//SHIFT INSTRUCTIONS
+	//SHIFT OPCODES
 		//ASL
 		case 0x0A: {
 			ASL(AddrACC());
@@ -497,7 +497,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//JUMP AND CALL INSTRUCTIONS
+	//JUMP AND CALL OPCODES
 		//JMP
 		case 0x4C: {
 			PC += 2;
@@ -520,7 +520,7 @@ void CPU::executeCycle() {
 		}
 
 
-	//BRANCH INSTRUCTIONS
+	//BRANCH OPCODES
 		//BCC
 		case 0x90: {
 			PC++;
@@ -568,6 +568,42 @@ void CPU::executeCycle() {
 			PC++;
 			BVS(AddrREL(mem[PC]));
 		}
+
+	//STATUS FLAG OPCODES
+		//CLC
+		case 0x18: {
+			CLC(AddrIMP());
+		}
+
+		//CLD
+		case 0xD8: {
+			CLD(AddrIMP());
+		}
+
+		//CLI
+		case 0x58: {
+			CLI(AddrIMP());
+		}
+
+		//CLV
+		case 0xB8: {
+			CLV(AddrIMP());
+		}
+
+		//SEC
+		case 0x38: {
+			SEC(AddrIMP());
+		}
+
+		//SED
+		case 0xF8: {
+			SED(AddrIMP());
+		}
+
+		//SEI
+		case 0x78: {
+			SEI(AddrIMP());
+		}
 	}
 
 	PC++;
@@ -591,4 +627,3 @@ void CPU::testFunction() {
 	if (flags&0x10)
 
 }*/
-//INSTRUCTIONS
