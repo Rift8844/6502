@@ -19,6 +19,9 @@ uint8_t CPU::AddrIMD(uint8_t arg) { return arg; }
 /*Look into later, I don't think anything is needed
 for this one though*/
 uint8_t CPU::AddrIMP() { return 0; }
+/*Apparently there's an accumulator
+addressing mode*/
+uint8_t& CPU::AddrACC() { return A; }
 
 uint16_t CPU::AddrIND(uint16_t arg) { 
 	return fetchTwoByte(arg);

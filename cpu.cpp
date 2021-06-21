@@ -343,7 +343,7 @@ void CPU::executeCycle() {
 		//69... NIIICCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE!!!
 		case 0x69: {
 			PC++;
-			ADC(AddrIMM(mem[PC]));
+			ADC(AddrIMD(mem[PC]));
 		}
 		case 0x65: {
 			PC++;
@@ -379,21 +379,8 @@ void CPU::executeCycle() {
 		}
 
 		//INX
-		case 0xE6: {
-			PC++;
-			INX(AddrZPG(mem[PC]));
-		} 
-		case 0xF6: {
-			PC++;
-			INX(AddrZPG(mem[PC]));
-		}
-		case 0xEE: {
-			PC += 2;
-			INX(AddrABS(mem[PC-1]<<8 | mem[PC]));
-		}
-		case 0xFE: {
-			PC++;
-			INX(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		case 0xE8: {
+			INY(AddrIMP());
 		}
 
 		//INY
@@ -431,8 +418,85 @@ void CPU::executeCycle() {
 			DEY(AddrIMP());
 		}
 
+
+	//SHIFT INSTRUCTIONS
+		//ASL
+		case 0x0A: {
+			ASL(AddrACC());
+		}
+		case 0x06: {
+			PC++;
+			ASL(AddrZPG(mem[PC]));
+		}
+		case 0x16: {
+			PC++;
+			ASL(AddrZPGX(mem[PC]));
+		}
+		case 0x0E: {
+			PC++;
+			ASL(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x1E: {
+			PC++;
+			ASL(AddrABSX(mem[PC-1] | mem[PC]));
+		}
+
+		//LSR
+		case 0x4A: {
+			LSR(AddrACC());
+		}
+		case 0x46: {
+			PC++;
+			LSR(AddrZPG(mem[PC]));
+		}
+		case 0x56: {
+			PC++;
+			LSR(AdddrZPGX(mem[PC]));
+		}
+		case 0x4E: {
+			PC++;
+			LSR(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x5E: {
+			PC++;
+			LSR(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//ROL
+		case 0x2A: {
+			ROL(AdrACC());
+		}
+		case 0x26: {
+			PC++;
+			ROL(AddrZPG(mem[PC]));
+		}
+		case 0x2E: {
+			PC++;
+			ROL(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x3E: {
+			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//ROL
+		case 0x6A: {
+			ROL(AdrACC());
+		}
+		case 0x66: {
+			PC++;
+			ROL(AddrZPG(mem[PC]));
+		}
+		case 0x76: {
+			PC++;
+			ROL(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x7E: {
+			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//Fuck caffeine withdrawal
 	}
-};
+}
 
 void CPU::testFunction() {
 
