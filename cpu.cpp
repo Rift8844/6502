@@ -338,7 +338,28 @@ void CPU::executeCycle() {
 
 
 	//ARITHMETIC INSTRUCTIONS
+		//ADC
 
+		//69... NIIICCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE!!!
+		case 0x69: {
+			PC++;
+			ADC(AddrIMM(mem[PC]));
+		}
+		case 0x65: {
+			PC++;
+			ADC(AddrZPG(mem[PC]));
+		}
+		case 0x75: {
+			PC++;
+			ADC(AddrZPGX(mem[PC]));
+		}
+		case 0x6D: {
+			PC += 2;
+			ADC(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+
+
+	//INCREMENT AND DECREMENT INSTRUCTIONS
 		//INC
 		case 0xE6: {
 			PC++;
