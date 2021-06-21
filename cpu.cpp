@@ -494,7 +494,25 @@ void CPU::executeCycle() {
 			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 
-		//Fuck caffeine withdrawal
+
+	//JUMP AND CALL INSTRUCTIONS
+		//JMP
+		case 0x4C: {
+			JMP(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0x6C: {
+			JMP(AddrIND(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//JSR
+		case 0x20: {
+			JSR(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//RTS
+		case 0x60: {
+			RTS(AddrIMP());
+		}
 	}
 }
 
