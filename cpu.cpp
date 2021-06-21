@@ -433,11 +433,11 @@ void CPU::executeCycle() {
 			ASL(AddrZPGX(mem[PC]));
 		}
 		case 0x0E: {
-			PC++;
+			PC += 2;
 			ASL(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x1E: {
-			PC++;
+			PC += 2;
 			ASL(AddrABSX(mem[PC-1] | mem[PC]));
 		}
 
@@ -451,46 +451,48 @@ void CPU::executeCycle() {
 		}
 		case 0x56: {
 			PC++;
-			LSR(AdddrZPGX(mem[PC]));
+			LSR(AddrZPGX(mem[PC]));
 		}
 		case 0x4E: {
-			PC++;
+			PC += 2;
 			LSR(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x5E: {
-			PC++;
+			PC += 2;
 			LSR(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 
 		//ROL
 		case 0x2A: {
-			ROL(AdrACC());
+			ROL(AddrACC());
 		}
 		case 0x26: {
 			PC++;
 			ROL(AddrZPG(mem[PC]));
 		}
 		case 0x2E: {
-			PC++;
+			PC += 2;
 			ROL(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x3E: {
+			PC += 2;
 			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 
 		//ROL
 		case 0x6A: {
-			ROL(AdrACC());
+			ROL(AddrACC());
 		}
 		case 0x66: {
 			PC++;
 			ROL(AddrZPG(mem[PC]));
 		}
 		case 0x76: {
-			PC++;
+			PC += 2;
 			ROL(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x7E: {
+			PC += 2;
 			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
 		}
 
@@ -498,14 +500,17 @@ void CPU::executeCycle() {
 	//JUMP AND CALL INSTRUCTIONS
 		//JMP
 		case 0x4C: {
+			PC += 2;
 			JMP(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 		case 0x6C: {
+			PC += 2;
 			JMP(AddrIND(mem[PC-1]<<8 | mem[PC]));
 		}
 
 		//JSR
 		case 0x20: {
+			PC += 2;
 			JSR(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
 
@@ -513,7 +518,59 @@ void CPU::executeCycle() {
 		case 0x60: {
 			RTS(AddrIMP());
 		}
+
+
+	//BRANCH INSTRUCTIONS
+		//BCC
+		case 0x90: {
+			PC++;
+			BCC(AddrREL(mem[PC]));
+		}
+
+		//BCS
+		case 0xB0: {
+			PC++;
+			BCS(AddrREL(mem[PC]));
+		}
+
+		//BEQ
+		case 0xF0: {
+			PC++;
+			BEQ(AddrREL(mem[PC]));
+		}
+
+		//BMI
+		case 0x30: {
+			PC++;
+			BMI(AddrREL(mem[PC]));
+		}
+
+		//BNE
+		case 0xD0: {
+			PC++;
+			BNE(AddrREL(mem[PC]));
+		}
+
+		//BPL
+		case 0x10: {
+			PC++;
+			BCS(AddrREL(mem[PC]));
+		}
+
+		//BVC
+		case 0x50: {
+			PC++;
+			BCS(AddrREL(mem[PC]));
+		}
+
+		//BVS
+		case 0x70: {
+			PC++;
+			BVS(AddrREL(mem[PC]));
+		}
 	}
+
+	PC++;
 }
 
 void CPU::testFunction() {

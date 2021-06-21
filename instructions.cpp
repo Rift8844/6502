@@ -175,6 +175,10 @@ void CPU::BMI(int8_t br) {
 	if (ST.negative)
 		PC = br;
 }
+void CPU::BNE(int8_t br) {
+	if (!ST.zero)
+		PC = br;
+}
 void CPU::BPL(int8_t br) {
 	if (!ST.negative)
 		PC = br;

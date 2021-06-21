@@ -80,6 +80,8 @@ class CPU {
 	/*Look into later, I don't think anything is needed
 	for this one though*/
 	uint8_t  AddrIMP();
+	uint8_t& AddrACC();
+
 	uint16_t AddrIND(uint16_t arg);
 	uint8_t& AddrXIND(uint8_t arg);
 	uint8_t& AddrINDY(uint8_t arg);
@@ -167,6 +169,7 @@ class CPU {
 	void BCS(int8_t br);
 	void BEQ(int8_t br);
 	void BMI(int8_t br);
+	void BNE(int8_t br);
 	void BPL(int8_t br);
 	void BVC(int8_t br);
 	void BVS(int8_t br);
