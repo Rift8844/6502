@@ -332,8 +332,84 @@ void CPU::executeCycle() {
 			BIT(AddrZPG(mem[PC]));
 		}
 		case 0x2C: {
+			PC += 2;
 			BIT(AddrABS(mem[PC-1]<<8 | mem[PC]));
 		}
+
+
+	//ARITHMETIC INSTRUCTIONS
+
+		//INC
+		case 0xE6: {
+			PC++;
+			INC(AddrZPG(mem[PC]));
+		} 
+		case 0xF6: {
+			PC++;
+			INC(AddrZPG(mem[PC]));
+		}
+		case 0xEE: {
+			PC += 2;
+			INC(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0xFE: {
+			PC += 2;
+			INC(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//INX
+		case 0xE6: {
+			PC++;
+			INX(AddrZPG(mem[PC]));
+		} 
+		case 0xF6: {
+			PC++;
+			INX(AddrZPG(mem[PC]));
+		}
+		case 0xEE: {
+			PC += 2;
+			INX(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0xFE: {
+			PC++;
+			INX(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//INY
+		case 0xC8: {
+			INY(AddrIMP());
+		}
+
+		//DEC
+		case 0xC6: {
+			PC++;
+			DEC(AddrZPG(mem[PC]));
+		}
+		case 0xD6: {
+			PC++;
+			DEC(AddrZPGX(mem[PC]));
+		}
+		case 0xCE: {
+			PC += 2;
+			DEC(AddrABS(mem[PC-1]<<8 | mem[PC]));
+		}
+		case 0xDE: {
+			PC += 2;
+			DEC(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+		}
+
+		//DEX
+		case 0xCA: {
+			PC++;
+			DEX(AddrIMP());
+		}
+
+		//DEY
+		case 0x88: {
+			PC++;
+			DEY(AddrIMP());
+		}
+
 	}
 };
 
