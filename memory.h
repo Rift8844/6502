@@ -24,7 +24,7 @@ public:
 	uint8_t& getLE(uint16_t addr) { return mem[(addr << 8)|(addr >> 8)]; }
 	uint8_t const getLE(uint16_t addr) const { return mem[(addr << 8)|(addr >> 8)]; }
 
-	void loadState(std::istream& is);
+	void loadState(std::istream& is, int streamOff, int memOff);
 
 	std::size_t size;
 };

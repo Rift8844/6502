@@ -6,7 +6,7 @@ Memory::Memory(std::size_t sz) : size{sz} {
 	addrStart = mem.begin();
 }
 
-void Memory::loadState(std::istream& is) {
+void Memory::loadState(std::istream& is, int streamOff, int memOff) {
 	int prevPos = is.tellg();
 
 	is.seekg(0, std::ios_base::end);
@@ -15,7 +15,7 @@ void Memory::loadState(std::istream& is) {
 	if (streamLength > mem.size()-1)
 		throw std::exception();
 
-	is.seekg(prevPos);
+	is.seekg(prevPos+streamOff);
 
-	is.read(reinterpret_cast<char*>(mem.data()), std::max(size, streamLength));
+	is.read(reinterpret_cast<char*>(mem.data()+memOff), std::max(size, streamLength));
 }
