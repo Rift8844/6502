@@ -4,7 +4,7 @@
 void CPU::LD(uint8_t& reg, uint8_t val) {
 	reg = val;
 	ST.zero = val == 0;
-	ST.negative = val & 0b10000000;
+	ST.negative = val & 0x80;
 }
 void CPU::LDA(uint8_t val) { LD(A, val); }
 void CPU::LDX(uint8_t val) { LD(X, val); }
@@ -18,7 +18,7 @@ void CPU::STY(uint8_t& loc) { loc = Y; }
 void CPU::TR(uint8_t& lval, uint8_t rval) {
 	lval = rval;
 	ST.zero = lval == 0;
-	ST.negative = lval & 0b10000000;
+	ST.negative = lval & 0x80;
 }
 void CPU::TAX(uint8_t implied) { TR(X, A); }
 void CPU::TAY(uint8_t implied) { TR(Y, A); }
@@ -30,7 +30,7 @@ void CPU::TYA(uint8_t implied) { TR(A, Y); }
 void CPU::TSX(uint8_t implied) { 
 	X = SP;
 	ST.zero = X == 0;
-	ST.negative = X & 0b10000000;
+	ST.negative = X & 0x80;
 }
 void CPU::TXS(uint8_t implied) { SP = X; }
 void CPU::PHA(uint8_t implied) { SP++; mem[SP] = A; }
@@ -39,7 +39,7 @@ void CPU::PLA(uint8_t implied) {
 	A = mem[SP]; 
 	SP--; 
 	ST.zero = A == 0;
-	ST.negative = A & 0b10000000;
+	ST.negative = A & 0x80;
 } 
 void CPU::PLP(uint8_t implied) { ST.status = mem[SP]; SP--; }
 
@@ -48,48 +48,78 @@ void CPU::PLP(uint8_t implied) { ST.status = mem[SP]; SP--; }
 void CPU::AND(uint8_t m) {
 	A = A && m;
 	ST.zero = A == 0;
-	ST.negative = A & 0b10000000;
+	ST.negative = A & 0x80;
 }
 void CPU::EOR(uint8_t m) {
 	A = !(A || m);
 	ST.zero = A == 0;
-	ST.negative = A & 0b10000000;
+	ST.negative = A & 0x80;
 }
 void CPU::ORA(uint8_t m) {
 	A = A || m;
 	ST.zero = A == 0;
-	ST.negative = A & 0b10000000;
+	ST.negative = A & 0x80;
 }
 void CPU::BIT(uint8_t m) { 
 	ST.zero = !(A & m);
-	ST.overflow = m & 0b01000000;
-	ST.negative = m & 0b10000000;
+	ST.overflow = m & 0x40;
+	ST.negative = m & 0x80;
 }
 
 
 
 void CPU::ADC(uint8_t m) {
-	uint8_t sum = A + m + ST.carry;
+	if (!ST.decimal) {
+		uint8_t sum = A + m + ST.carry;
 
-	if (sum < A)
-		ST.carry = true;
+		ST.carry = sum < A;
+		/*If the signs of both operands
+		isn't equal to the result, there was
+		an overflow*/
+		A = sum;
 
-	/*If the signs of both operands
-	isn't equal to the result, there was
-	an overflow*/
-	ST.overflow = (A^sum)&(m^sum)&0x80;
+		ST.negative = m & 0x80;
+		ST.overflow = (A^sum)&(m^sum)&0x80;
+		ST.zero = A == 0x00;
 
-	A = sum;
+	//BCD mode
+	} else {
+		uint8_t lowN  = A&0x0F + m&0x0F + ST.carry;
+		uint8_t highN = A>>4 + m>>4 + (lowN > 0xF);
+
+		ST.carry = highN > 0xF;
+
+		//Fix if the high nibble goes out of range
+		highN %= 0xA;
+
+		//Zero flag is calculated in the same was as binary mode
+		ST.negative = highN&0x8 == 0;
+		ST.overflow = (highN<<4 ^ A) ^ (highN<<4 ^ m) & 0x80;
+		ST.zero = A + m + ST.carry == 0;
+		
+		A = highN<<4 | (lowN&0xF);
+	}
 }
 void CPU::SBC(uint8_t m) {
+	//Non BCD difference is used in BCD SBC too
 	uint8_t diff = A - m - !ST.carry;
 
-	if (diff > A)
-		ST.carry = true;
+	if (!ST.decimal) {
+		A = diff;
+	//BCD Subtract
+	} else {
+		uint8_t lowN  = A&0xF - m&0xF - !ST.carry;
+		lowN %= 0xA;
+		uint8_t highN = A>>4 - m>>4 - (lowN < 0x0);
+		highN %= 0xA;
 
+		A = highN<<4 | (lowN&0x0F);
+	}
+
+	ST.carry = diff > A;
+	ST.negative = diff < 0;
 	ST.overflow = (A^diff)&(m^diff)&0x80;
-
-	A = diff;
+	ST.zero = diff == 0;
 }
 void CPU::CP(uint8_t reg, uint8_t m) {
 	ST.carry = reg >= m;
