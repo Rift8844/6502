@@ -4,6 +4,10 @@
 
 all: 6502
 
+6502: cpu.o addressing_modes.o instructions.o memory.o main.o
+	g++ -C memory.o cpu.o addressing_modes.o instructions.o main.o -o 6502
+	echo BUILD COMPLETE
+
 cpu.o: addressing_modes.o instructions.o cpu.h cpu.cpp
 	g++ -c cpu.h cpu.cpp
 addressing_modes.o: addressing_modes.cpp
@@ -16,10 +20,6 @@ memory.o: memory.h memory.cpp
 
 main.o: main.cpp
 	g++ -c main.cpp
-
-6502: cpu.o addressing_modes.o instructions.o memory.o main.o
-	g++ -C memory.o cpu.o addressing_modes.o instructions.o main.o -o 6502
-	echo BUILD COMPLETE
 
 clean:
 	rm 6502
