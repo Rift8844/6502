@@ -2,9 +2,10 @@
 #pragma once
 
 class CPUDebugger {
-	CPU cpu;
+	CPU& cpu;
 
 public:
+	//FACE MELTER HOW TO DO IMPOSSIBLE THINGS
 	uint16_t PC ()  { return cpu.PC; }
 	uint8_t& SP ()  { return cpu.SP; }
 	uint8_t& A()    { return cpu.A; }
