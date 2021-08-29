@@ -6,16 +6,14 @@ Memory::Memory(std::size_t sz) : size{sz} {
 	addrStart = mem.begin();
 }
 
-void Memory::loadState(std::istream& is, int streamOff, int memOff) {
-	int prevPos = is.tellg();
+void Memory::loadState(std::istream& is, int memOff, int streamOff) {
 
-	is.seekg(0, std::ios_base::end);
-	std::size_t streamLength = is.tellg() - prevPos;
+	is.seekg(0, is.end);
+	std::size_t streamLength = is.tellg();
+	is.seekg(streamOff);
 
-	if (streamLength > mem.size()-1)
-		throw std::exception();
+	/*if (streamLength > mem.size()-1)
+		throw std::exception();*/
 
-	is.seekg(prevPos+streamOff);
-
-	is.read(reinterpret_cast<char*>(mem.data()+memOff), std::max(size, streamLength));
+	is.read(reinterpret_cast<char*>(mem.data()+memOff), std::min(size - memOff, streamLength));
 }
