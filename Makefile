@@ -24,6 +24,9 @@ memory.o: memory.h memory.cpp
 main.o: main.cpp
 	g++ -c $(CXXFLAGS) main.cpp
 
+debugger.o: debugger.h
+	g++ -c $(CXXFLAGS) cpu.h cpu.cpp
+
 clean:
 	rm 6502
 
