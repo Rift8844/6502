@@ -7,8 +7,8 @@ CXXFLAGS = -g
 
 all: 6502
 
-6502: cpu.o addressing_modes.o instructions.o memory.o main.o
-	g++ -C memory.o cpu.o addressing_modes.o instructions.o main.o -o 6502
+6502: cpu.o addressing_modes.o instructions.o memory.o main.o debugger.o
+	g++ -C memory.o cpu.o addressing_modes.o instructions.o main.o debugger.o -o 6502
 	echo BUILD COMPLETE
 
 cpu.o: addressing_modes.o instructions.o cpu.h cpu.cpp
@@ -24,8 +24,8 @@ memory.o: memory.h memory.cpp
 main.o: main.cpp
 	g++ -c $(CXXFLAGS) main.cpp
 
-debugger.o: debugger.h
-	g++ -c $(CXXFLAGS) cpu.h cpu.cpp
+debugger.o: debugger.h debugger.cpp
+	g++ -c $(CXXFLAGS) debugger.h debugger.cpp
 
 clean:
 	rm 6502

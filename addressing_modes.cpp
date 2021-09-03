@@ -1,10 +1,12 @@
 
 #include "cpu.h"
 
-uint8_t& CPU::AddrABS(uint16_t arg) { return mem.getLE(arg); }
-//ABSX and ABY
-uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) { 
-	uint16_t addr = decodeLE(arg)+idx;
+uint8_t& CPU::AddrABS(uint16_t arg) { return mem[arg]; }
+//ABSX and ABSY
+uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) {
+	//Wrap around while preserving the page
+	uint16_t addr = (arg&0xFF00 | (arg+idx+ST.carry)&+0x00FF);
+	ST.carry = addr < arg+idx;
 
 	return mem[addr];
 }

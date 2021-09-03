@@ -1,112 +1,145 @@
 #include <iostream>
+#include <fstream>
 #include "cpu.h"
  
-void CPU::initialize() {
-	constexpr std::size_t memSize = 65536;
 
-	PC = stackEnd+1;
+constexpr uint32_t memSize = 0xFFFF;
+
+void CPU::initialize() {
+
+	//PC = stackEnd+1;
+	/*I'm not sure of this, but apparently NES
+	uses a "reset vector", which sets the PC to
+	the value at address 0XFFFC*/
 	SP = 0x00;
 	A =  0x00;
 	X =  0x00;
 	Y =  0x00;
 	ST.status = 0x00;
+	PC = 0x00;
 
 	//Fix this shit later lol
-	mem = Memory(memSize);
+	//mem = Memory(memSize);
 }
 
-//Implement later
-void CPU::loadProgram(std::string const& name) {};
-
+CPU::CPU() : mem { Memory(memSize) } {
+	initialize();
+}
 
 void CPU::executeCycle() {
+
 	switch(mem[PC]) {
 		/*Try optimizing this by making
 		the accumulator in a union with the
 		carry bit, so you only have to do one
 		instruction!*/
 		
-
+	/*ENDIANNESS NOTE:
+	Endianness is handled by the opcode decodeing.
+	Every three byte instruction increments the PC
+	by two before it is executed, selecting the
+	lo-byte. When it is passed to the addressing mode
+	function, the lo-byte is shifted mem[PC] is shifted
+	<< 8 to the high digit. The hi-byte is then ORd |
+	to the low digit.
+	*/
 	//LOAD OPCODES
 		//LDA
 		case 0xA9: {
 			PC++;
 			LDA(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0xA5: {
 			PC++;
 			LDA(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0xB5: {
 			PC++;
 			LDA(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0xAD: {
 			PC += 2;
-			//Endianness is handled by addressing modes
-			LDA(AddrABS((mem[PC]-1)<<8 | mem[PC]));
+			LDA(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xBD: {
 			PC += 2;
-			LDA(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			LDA(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xB9: {
 			PC += 2;
-			LDA(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+			LDA(AddrABSY(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xA1: {
 			PC++;
 			LDA(AddrXIND(mem[PC]));
+			break;
 		}
 		case 0xB1: {
 			PC++;
 			LDA(AddrINDY(mem[PC]));
+			break;
 		}
 
 		//LDX
 		case 0xA2: {
 			PC++;
 			LDX(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0xA6: {
 			PC++;
 			LDX(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0xB6: {
 			PC++;
 			LDX(AddrZPGY(mem[PC]));
+			break;
 		}
 		case 0xAE: {
 			PC += 2;
 			//Endianness is handled by addressing modes
-			LDX(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			LDX(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xBE: {
 			PC += 2;
-			LDX(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+			LDX(AddrABSY(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//LDY
 		case 0xA0: {
 			PC++;
 			LDY(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0xA4: {
 			PC++;
 			LDY(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0xB4: {
 			PC++;
 			LDY(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0xAC: {
 			PC += 2;
 			//Endianness is handled by addressing modes
-			LDY(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			LDY(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xBC: {
 			PC += 2;
-			LDY(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			LDY(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 
@@ -115,58 +148,71 @@ void CPU::executeCycle() {
 		case 0x85: {
 			PC++;
 			STA(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x95: {
 			PC++;
 			STA(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x8D: {
 			PC += 2;
-			STA(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			STA(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x9D: {
 			PC += 2;
-			STA(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			STA(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x99: {
 			PC += 2;
-			STA(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+			STA(AddrABSY(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x81: {
 			PC++;
 			STA(AddrXIND(mem[PC]));
+			break;
 		}
 		case 0x91: {
 			PC++;
 			STA(AddrINDY(mem[PC]));
+			break;
 		}
 
 		//STX
 		case 0x86: {
 			PC++;
 			STX(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x96: {
 			PC++;
 			STX(AddrZPGY(mem[PC]));
+			break;
 		}
 		case 0x8E: {
 			PC += 2;
-			STX(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			STX(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//STY
 		case 0x84: {
 			PC++;
 			STX(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x94: {
 			PC++;
 			STX(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x8C: {
 			PC += 2;
 			STX(AddrABS(mem[PC-1]<<8 |  mem[PC]));
+			break;
 		}
 
 
@@ -174,21 +220,25 @@ void CPU::executeCycle() {
 		//TAX
 		case 0xAA: {
 			TAX(AddrIMP());
+			break;
 		}
 
 		//TAY
 		case 0xA8: {
 			TAY(AddrIMP());
+			break;
 		}
 
 		//TXA
 		case 0x8A: {
 			TXA(AddrIMP());
+			break;
 		}
 
 		//TYA
 		case 0x98: {
 			TYA(AddrIMP());
+			break;
 		}
 
 
@@ -196,31 +246,37 @@ void CPU::executeCycle() {
 		//TSX
 		case 0xBA: {
 			TSX(AddrIMP());
+			break;
 		}
 
 		//TXS
 		case 0x9A: {
 			TXS(AddrIMP());
+			break;
 		}
 
 		//PHA
 		case 0x48: {
 			PHA(AddrIMP());
+			break;
 		}
 
 		//PHP
 		case 0x08: {
 			PHP(AddrIMP());
+			break;
 		}
 
 		//PLA
 		case 0x68: {
 			PLA(AddrIMP());
+			break;
 		}
 
 		//PLP
 		case 0x28: {
 			PLP(AddrIMP());
+			break;
 		}
 
 
@@ -229,111 +285,137 @@ void CPU::executeCycle() {
 		case 0x29: {
 			PC++;
 			AND(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0x25: {
 			PC++;
 			AND(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x35: {
 			PC++;
 			AND(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x2D: {
 			PC += 2;
-			AND(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			AND(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x3D: {
 			PC += 2;
-			AND(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			AND(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x39: {
 			PC += 2;
-			AND(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+			AND(AddrABSY(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x21: {
 			PC++;
 			AND(AddrXIND(mem[PC]));
+			break;
 		}
 		case 0x31: {
 			AND(AddrINDY(mem[PC]));
+			break;
 		}
 		
 		//EOR
 		case 0x49: {
 			PC++;
 			EOR(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0x45: {
 			PC++;
 			EOR(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x55: {
 			PC++;
 			EOR(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x4D: {
 			PC += 2;
-			EOR(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			EOR(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x5D: {
 			PC += 2;
-			EOR(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			EOR(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x59: {
 			PC += 2;
-			EOR(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+			EOR(AddrABSY(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x41: {
 			PC++;
 			EOR(AddrXIND(mem[PC]));
+			break;
 		}
 		case 0x51: {
 			PC++;
 			EOR(AddrINDY(mem[PC]));
+			break;
 		}
 
 		//ORA
 		case 0x09: {
 			PC++;
 			ORA(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0x05: {
 			PC++;
 			ORA(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x15: {
 			PC++;
 			ORA(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x0D: {
 			PC += 2;
-			ORA(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			ORA(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x1D: {
 			PC += 2;
-			ORA(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			ORA(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x19: {
 			PC += 2;
-			ORA(AddrABSY(mem[PC-1]<<8 | mem[PC]));
+			ORA(AddrABSY(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x01: {
 			PC++;
 			ORA(AddrXIND(mem[PC]));
+			break;
 		}
 		case 0x11: {
 			PC++;
 			ORA(AddrINDY(mem[PC]));
+			break;
 		}
 
 		//BIT
 		case 0x24: {
 			PC++;
 			BIT(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x2C: {
 			PC += 2;
-			BIT(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			BIT(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 
@@ -344,18 +426,22 @@ void CPU::executeCycle() {
 		case 0x69: {
 			PC++;
 			ADC(AddrIMD(mem[PC]));
+			break;
 		}
 		case 0x65: {
 			PC++;
 			ADC(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x75: {
 			PC++;
 			ADC(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x6D: {
 			PC += 2;
-			ADC(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			ADC(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 
@@ -364,58 +450,70 @@ void CPU::executeCycle() {
 		case 0xE6: {
 			PC++;
 			INC(AddrZPG(mem[PC]));
+			break;
 		} 
 		case 0xF6: {
 			PC++;
 			INC(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0xEE: {
 			PC += 2;
-			INC(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			INC(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xFE: {
 			PC += 2;
-			INC(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			INC(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//INX
 		case 0xE8: {
 			INY(AddrIMP());
+			break;
 		}
 
 		//INY
 		case 0xC8: {
 			INY(AddrIMP());
+			break;
 		}
 
 		//DEC
 		case 0xC6: {
 			PC++;
 			DEC(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0xD6: {
 			PC++;
 			DEC(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0xCE: {
 			PC += 2;
-			DEC(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			DEC(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0xDE: {
 			PC += 2;
-			DEC(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			DEC(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//DEX
 		case 0xCA: {
 			PC++;
 			DEX(AddrIMP());
+			break;
 		}
 
 		//DEY
 		case 0x88: {
 			PC++;
 			DEY(AddrIMP());
+			break;
 		}
 
 
@@ -423,77 +521,95 @@ void CPU::executeCycle() {
 		//ASL
 		case 0x0A: {
 			ASL(AddrACC());
+			break;
 		}
 		case 0x06: {
 			PC++;
 			ASL(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x16: {
 			PC++;
 			ASL(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x0E: {
 			PC += 2;
-			ASL(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			ASL(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x1E: {
 			PC += 2;
 			ASL(AddrABSX(mem[PC-1] | mem[PC]));
+			break;
 		}
 
 		//LSR
 		case 0x4A: {
 			LSR(AddrACC());
+			break;
 		}
 		case 0x46: {
 			PC++;
 			LSR(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x56: {
 			PC++;
 			LSR(AddrZPGX(mem[PC]));
+			break;
 		}
 		case 0x4E: {
 			PC += 2;
-			LSR(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			LSR(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x5E: {
 			PC += 2;
-			LSR(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			LSR(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//ROL
 		case 0x2A: {
 			ROL(AddrACC());
+			break;
 		}
 		case 0x26: {
 			PC++;
 			ROL(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x2E: {
 			PC += 2;
-			ROL(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			ROL(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x3E: {
 			PC += 2;
-			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			ROL(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//ROL
 		case 0x6A: {
 			ROL(AddrACC());
+			break;
 		}
 		case 0x66: {
 			PC++;
 			ROL(AddrZPG(mem[PC]));
+			break;
 		}
 		case 0x76: {
 			PC += 2;
-			ROL(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			ROL(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x7E: {
 			PC += 2;
-			ROL(AddrABSX(mem[PC-1]<<8 | mem[PC]));
+			ROL(AddrABSX(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 
@@ -501,22 +617,26 @@ void CPU::executeCycle() {
 		//JMP
 		case 0x4C: {
 			PC += 2;
-			JMP(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			JMP(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 		case 0x6C: {
 			PC += 2;
-			JMP(AddrIND(mem[PC-1]<<8 | mem[PC]));
+			JMP(AddrIND(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//JSR
 		case 0x20: {
 			PC += 2;
-			JSR(AddrABS(mem[PC-1]<<8 | mem[PC]));
+			JSR(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
 		}
 
 		//RTS
 		case 0x60: {
 			RTS(AddrIMP());
+			break;
 		}
 
 
@@ -525,84 +645,99 @@ void CPU::executeCycle() {
 		case 0x90: {
 			PC++;
 			BCC(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BCS
 		case 0xB0: {
 			PC++;
 			BCS(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BEQ
 		case 0xF0: {
 			PC++;
 			BEQ(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BMI
 		case 0x30: {
 			PC++;
 			BMI(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BNE
 		case 0xD0: {
 			PC++;
 			BNE(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BPL
 		case 0x10: {
 			PC++;
 			BCS(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BVC
 		case 0x50: {
 			PC++;
 			BCS(AddrREL(mem[PC]));
+			break;
 		}
 
 		//BVS
 		case 0x70: {
 			PC++;
 			BVS(AddrREL(mem[PC]));
+			break;
 		}
 
 	//STATUS FLAG OPCODES
 		//CLC
 		case 0x18: {
 			CLC(AddrIMP());
+			break;
 		}
 
 		//CLD
 		case 0xD8: {
 			CLD(AddrIMP());
+			break;
 		}
 
 		//CLI
 		case 0x58: {
 			CLI(AddrIMP());
+			break;
 		}
 
 		//CLV
 		case 0xB8: {
 			CLV(AddrIMP());
+			break;
 		}
 
 		//SEC
 		case 0x38: {
 			SEC(AddrIMP());
+			break;
 		}
 
 		//SED
 		case 0xF8: {
 			SED(AddrIMP());
+			break;
 		}
 
 		//SEI
 		case 0x78: {
 			SEI(AddrIMP());
+			break;
 		}
 
 
@@ -610,25 +745,29 @@ void CPU::executeCycle() {
 		//BRK
 		case 0x00: {
 			BRK(AddrIMP());
+			break;
 		}
 
 		//NOP
 		case 0xEA: {
 			NOP(AddrIMP());
+			break;
 		}
 
 		//RTI
 		case 0x40: {
 			RTI(AddrIMP());
+			break;
+		}
+
+		default: {
+			std::cerr << "Uknown opcode";
 		}
 	}
 
 	PC++;
 }
 
-void CPU::testFunction() {
-
-}
 
 
 
@@ -642,5 +781,4 @@ void CPU::testFunction() {
 	//if (flags&0x02)
 
 	if (flags&0x10)
-
 }*/

@@ -1,22 +1,30 @@
 #include "cpu.h"
+#include "memory.h"
+#include <iostream>
+
 #pragma once
 
-class CPUDebugger {
-	CPU& cpu;
+class CPUDebugger : public CPU {
 
 public:
 	//FACE MELTER HOW TO DO IMPOSSIBLE THINGS
-	uint16_t PC ()  { return cpu.PC; }
-	uint8_t& SP ()  { return cpu.SP; }
-	uint8_t& A()    { return cpu.A; }
-	uint8_t& X()  	{ return cpu.X; }
-	uint8_t& Y() 	{ return cpu.Y; }
-	uint8_t& ST()   { return cpu.ST; }
-	uint8_t& mem()  { return cpu.mem; }
+	uint16_t getPC() const { return PC; };
+	uint8_t& getSP()  { return SP; };
+	uint8_t& getA()   { return A;  };
+	uint8_t& getX()   { return X;  };
+	uint8_t& getY()   { return Y;  };
 
-	uint16_t getInstr { return mem[PC-1]<<8 | mem[PC]; }
+	uint8_t  getSP() const { return SP; };
+	uint8_t  getA()  const { return A;  };
+	uint8_t  getX()  const { return X;  };
+	uint8_t  getY()  const { return Y;  };
 
-	void jump(uint16_t loc) { cpu.JMP(loc); }
+	uint16_t getInstr() const { return (mem[PC]<<8 | mem[PC+1]); };
 
-	CPUDebugger(CPU& cpu_) : cpu {cpu_} {};
-}
+	//uint8_t union& ST()   { return ST; };
+	Memory& getMem()  { return mem; };
+
+	void jump(uint16_t loc) { JMP(loc); };
+};
+
+std::ostream& operator<<(std::ostream& os, CPUDebugger& cpu);

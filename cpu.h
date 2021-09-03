@@ -1,6 +1,5 @@
 
 #include "memory.h"
-
 #include <cstdint>
 #include <string>
 
@@ -10,10 +9,12 @@
 certain observable patterns, more extreme then the ones
 exhibited by male neurotypicals.*/
 class CPU {
+	friend class CPUDebugger;
+
 	static constexpr uint16_t stackStart = 0x0100;
 	static constexpr uint16_t stackEnd =   0x01FF;
-
 	uint16_t PC;
+
 	/*SP is an offset from 0x0100, not an
 	absolute address, since the SP is only 8 bit*/
 	uint8_t SP;
@@ -41,12 +42,15 @@ class CPU {
 		uint8_t status;
 	} ST;
 
+	Memory mem;
+
 	//Wipe all registers and memory
 	void initialize();
 
 	/*Fetch two bytes of data, which are needed
 	in some cases. Fetchtwobyte uses little endian, and preserves
 	the page number.*/
+	//MAY NEED TO BE FIXED, LOOK AT LATER
 	uint16_t fetchTwoByte(uint16_t addr) const { 
 		uint16_t val = mem[addr];
 		addr++;
@@ -191,12 +195,8 @@ class CPU {
 	void RTI(uint8_t implied);
 
 public:
-	Memory mem = Memory(65536);
 
-	CPU() { initialize(); }
+	CPU();
 
-	void testFunction();
-
-	void loadProgram(std::string const& name);
 	void executeCycle();
 };
