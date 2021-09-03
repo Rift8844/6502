@@ -1,6 +1,5 @@
 
 #include "memory.h"
-
 #include <cstdint>
 #include <string>
 
@@ -10,10 +9,15 @@
 certain observable patterns, more extreme then the ones
 exhibited by male neurotypicals.*/
 class CPU {
+	friend class CPUDebugger;
+
 	static constexpr uint16_t stackStart = 0x0100;
 	static constexpr uint16_t stackEnd =   0x01FF;
-
 	uint16_t PC;
+
+	/*Temporary program counter to
+	prevent falling through*/
+	uint16_t oldPC;
 	/*SP is an offset from 0x0100, not an
 	absolute address, since the SP is only 8 bit*/
 	uint8_t SP;
@@ -40,6 +44,8 @@ class CPU {
 
 		uint8_t status;
 	} ST;
+
+	Memory mem = Memory(0x1000000);
 
 	//Wipe all registers and memory
 	void initialize();
@@ -191,12 +197,8 @@ class CPU {
 	void RTI(uint8_t implied);
 
 public:
-	Memory mem = Memory(65536);
 
 	CPU() { initialize(); }
 
-	void testFunction();
-
-	void loadProgram(std::string const& name);
 	void executeCycle();
 };

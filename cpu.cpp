@@ -1,10 +1,14 @@
 #include <iostream>
+#include <fstream>
 #include "cpu.h"
  
 void CPU::initialize() {
 	constexpr std::size_t memSize = 65536;
 
-	PC = stackEnd+1;
+	//PC = stackEnd+1;
+	/*I'm nto sure of this, but apparently NES
+	uses a "reset vector", which sets the PC to
+	the value at address 0XFFFC*/
 	SP = 0x00;
 	A =  0x00;
 	X =  0x00;
@@ -15,12 +19,10 @@ void CPU::initialize() {
 	mem = Memory(memSize);
 }
 
-//Implement later
-void CPU::loadProgram(std::string const& name) {};
-
-
 void CPU::executeCycle() {
-	switch(mem[PC]) {
+	oldPC = PC;
+	
+	switch(mem[oldPC]) {
 		/*Try optimizing this by making
 		the accumulator in a union with the
 		carry bit, so you only have to do one
@@ -626,9 +628,6 @@ void CPU::executeCycle() {
 	PC++;
 }
 
-void CPU::testFunction() {
-
-}
 
 
 
