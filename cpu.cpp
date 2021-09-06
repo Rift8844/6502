@@ -470,7 +470,7 @@ void CPU::executeCycle() {
 
 		//INX
 		case 0xE8: {
-			INY(AddrIMP());
+			INX(AddrIMP());
 			break;
 		}
 
@@ -504,14 +504,12 @@ void CPU::executeCycle() {
 
 		//DEX
 		case 0xCA: {
-			PC++;
 			DEX(AddrIMP());
 			break;
 		}
 
 		//DEY
 		case 0x88: {
-			PC++;
 			DEY(AddrIMP());
 			break;
 		}
@@ -642,6 +640,14 @@ void CPU::executeCycle() {
 
 	//BRANCH OPCODES
 		//BCC
+		/*OPTIMIZATION NOTE:
+		The new branch address is calculated
+		before checking if the branch will occur
+		in the first place. This will probably
+		not be a heavy bottleneck in performance,
+		but nevertheless, it is an unnecessary
+		calculation in the code. Consider changing,
+		if appropriate.*/
 		case 0x90: {
 			PC++;
 			BCC(AddrREL(mem[PC]));
@@ -679,7 +685,7 @@ void CPU::executeCycle() {
 		//BPL
 		case 0x10: {
 			PC++;
-			BCS(AddrREL(mem[PC]));
+			BPL(AddrREL(mem[PC]));
 			break;
 		}
 

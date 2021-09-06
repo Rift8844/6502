@@ -189,35 +189,35 @@ void CPU::RTS(uint8_t STAYYYYYNOIIIIIDED_YUHHHHHHHHHHHHHHH_IVE_SEEN_NOIDEDD_IVE_
 
 
 
-void CPU::BCC(int8_t br) {
+void CPU::BCC(int16_t br) {
 	if (ST.carry)
 		PC = br;
 }
-void CPU::BCS(int8_t br) {
+void CPU::BCS(int16_t br) {
 	if (!ST.carry)
 		PC = br;
 }
-void CPU::BEQ(int8_t br) {
+void CPU::BEQ(int16_t br) {
 	if (ST.zero)
 		PC = br;
 }
-void CPU::BMI(int8_t br) {
+void CPU::BMI(int16_t br) {
 	if (ST.negative)
 		PC = br;
 }
-void CPU::BNE(int8_t br) {
+void CPU::BNE(int16_t br) {
 	if (!ST.zero)
 		PC = br;
 }
-void CPU::BPL(int8_t br) {
+void CPU::BPL(int16_t br) {
 	if (!ST.negative)
 		PC = br;
 }
-void CPU::BVC(int8_t br) {
+void CPU::BVC(int16_t br) {
 	if (!ST.overflow)
 		PC = br;
 }
-void CPU::BVS(int8_t br) {
+void CPU::BVS(int16_t br) {
 	if (ST.overflow)
 		PC = br;
 }

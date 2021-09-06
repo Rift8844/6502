@@ -5,7 +5,7 @@ uint8_t& CPU::AddrABS(uint16_t arg) { return mem[arg]; }
 //ABSX and ABSY
 uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) {
 	//Wrap around while preserving the page
-	uint16_t addr = (arg&0xFF00 | (arg+idx+ST.carry)&+0x00FF);
+	uint16_t addr = (arg&0xFF00 | (arg+idx+ST.carry)&0x00FF);
 	ST.carry = addr < arg+idx;
 
 	return mem[addr];
@@ -40,8 +40,13 @@ uint8_t& CPU::AddrINDY(uint8_t arg) {
 }
 
 //I think this is right..? INCOMPLETE
+/*Why did I say this was incomplete before
+Was there a reason? I think I pulled an
+all nighter before I wrote this thing. I
+really hope there's not some deadly bug in
+this that is just waiting to be discovered...*/
 uint16_t CPU::AddrREL(int8_t arg) {
-	return PC+2 + arg;
+	return PC + 1 + arg;
 }
 
 uint8_t& CPU::AddrZPG(uint8_t arg) {

@@ -19,4 +19,4 @@ int main() {
 		std::cout << cpu;
 		cpu.executeCycle();
 	}
-}
+} 
