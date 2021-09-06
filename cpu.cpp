@@ -443,6 +443,145 @@ void CPU::executeCycle() {
 			ADC(AddrABS(mem[PC]<<8 | mem[PC-1]));
 			break;
 		}
+		case 0x7D: {
+			PC += 2;
+			ADC(AddrABSX(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0x79: {
+			PC += 2;
+			ADC(AddrABSY(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0x61: {
+			PC += 2;
+			ADC(AddrXIND(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0x71: {
+			PC += 2;
+			ADC(AddrINDY(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+
+		//SBC
+		case 0xE9: {
+			PC++;
+			SBC(AddrIMD(mem[PC]));
+			break;
+		}
+		case 0xE5: {
+			PC++;
+			SBC(AddrZPG(mem[PC]));
+			break;
+		}
+		case 0xF5: {
+			PC++;
+			SBC(AddrZPGX(mem[PC]));
+			break;
+		}
+		case 0xED: {
+			PC += 2;
+			SBC(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
+		}
+		case 0xFD: {
+			PC += 2;
+			SBC(AddrABSX(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0xF9: {
+			PC += 2;
+			SBC(AddrABSY(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0xE1: {
+			PC += 2;
+			SBC(AddrXIND(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0xF1: {
+			PC += 2;
+			SBC(AddrINDY(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+
+		//CMP
+		case 0xC9: {
+			PC++;
+			CMP(AddrIMD(mem[PC]));
+			break;
+		}
+		case 0xC5: {
+			PC++;
+			CMP(AddrZPG(mem[PC]));
+			break;
+		}
+		case 0xD5: {
+			PC++;
+			CMP(AddrZPGX(mem[PC]));
+			break;
+		}
+		case 0xCD: {
+			PC += 2;
+			CMP(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
+		}
+		case 0xDD: {
+			PC += 2;
+			CMP(AddrABSX(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0xD9: {
+			PC += 2;
+			CMP(AddrABSY(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0xC1: {
+			PC += 2;
+			CMP(AddrXIND(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+		case 0xD1: {
+			PC += 2;
+			CMP(AddrINDY(mem[PC]<<8 | mem[PC]));
+			break;
+		}
+
+		//CPX
+		case 0xE0: {
+			PC++;
+			CPX(AddrIMM(mem[PC]));
+			break;
+		}
+		case 0xE4: {
+			PC++;
+			CPX(AddrZPG(mem[PC]));
+			break;
+		}
+		case 0xEC: {
+			PC++;
+			CPX(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
+		}
+
+		//CPY
+		case 0xC0: {
+			PC++;
+			CPY(AddrIMM(mem[PC]));
+			break;
+		}
+		case 0xC4: {
+			PC++;
+			CPY(AddrZPG(mem[PC]));
+			break;
+		}
+		case 0xCC: {
+			PC++;
+			CPY(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			break;
+		}
+
 
 
 	//INCREMENT AND DECREMENT OPCODES
