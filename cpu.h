@@ -28,17 +28,17 @@ class CPU {
 	this is endian dependent, and it's
 	technically UB.*/
 	union {
-
-		bool negative;
-		bool overflow;
-		//Reserved does nothing lmfao
-		bool reserved;
-		bool brk;
-		bool decimal;
-		bool interrupt;
-		bool zero;
-		bool carry;
-
+		struct {
+			bool negative;
+			bool overflow;
+			//Reserved does nothing lmfao
+			bool reserved;
+			bool brk;
+			bool decimal;
+			bool interrupt;
+			bool zero;
+			bool carry;
+		};
 		uint8_t status;
 	} ST;
 
@@ -169,14 +169,14 @@ class CPU {
 
 
 
-	void BCC(int8_t br);
-	void BCS(int8_t br);
-	void BEQ(int8_t br);
-	void BMI(int8_t br);
-	void BNE(int8_t br);
-	void BPL(int8_t br);
-	void BVC(int8_t br);
-	void BVS(int8_t br);
+	void BCC(int16_t br);
+	void BCS(int16_t br);
+	void BEQ(int16_t br);
+	void BMI(int16_t br);
+	void BNE(int16_t br);
+	void BPL(int16_t br);
+	void BVC(int16_t br);
+	void BVS(int16_t br);
 
 
 
