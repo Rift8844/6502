@@ -551,7 +551,7 @@ void CPU::executeCycle() {
 		//CPX
 		case 0xE0: {
 			PC++;
-			CPX(AddrIMM(mem[PC]));
+			CPX(AddrIMD(mem[PC]));
 			break;
 		}
 		case 0xE4: {
@@ -568,7 +568,7 @@ void CPU::executeCycle() {
 		//CPY
 		case 0xC0: {
 			PC++;
-			CPY(AddrIMM(mem[PC]));
+			CPY(AddrIMD(mem[PC]));
 			break;
 		}
 		case 0xC4: {
