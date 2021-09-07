@@ -93,7 +93,9 @@ void CPU::ADC(uint8_t m) {
 		highN %= 0xA;
 
 		//Zero flag is calculated in the same was as binary mode
-		ST.negative = highN&0x8 == 0;
+		/*Is this right? You might've screwed up the BCD mode, check
+		on it later.*/
+		ST.negative = highN&0x80 == 0;
 		ST.overflow = (highN<<4 ^ A) ^ (highN<<4 ^ m) & 0x80;
 		ST.zero = A + m + ST.carry == 0;
 		
@@ -117,7 +119,7 @@ void CPU::SBC(uint8_t m) {
 	}
 
 	ST.carry = diff > A;
-	ST.negative = diff < 0;
+	ST.negative = diff & 0x80;
 	ST.overflow = (A^diff)&(m^diff)&0x80;
 	ST.zero = diff == 0;
 }
@@ -134,14 +136,14 @@ void CPU::CPY(uint8_t m) { CP(Y, m); }
 
 void CPU::INC(uint8_t& val) {
 	val++;
-	ST.negative = val < 0;
+	ST.negative = val & 0x80;
 	ST.zero = val == 0;
 }
 void CPU::INX(uint8_t implied) { INC(X); }
 void CPU::INY(uint8_t implied) { INC(Y); }
 void CPU::DEC(uint8_t& val) {
 	val--;
-	ST.negative = val < 0;
+	ST.negative = val & 0x80;
 	ST.zero = val == 0;
 }
 void CPU::DEX(uint8_t implied) { DEC(X); }
