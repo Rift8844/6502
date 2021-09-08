@@ -95,7 +95,7 @@ void CPU::ADC(uint8_t m) {
 		//Zero flag is calculated in the same was as binary mode
 		/*Is this right? You might've screwed up the BCD mode, check
 		on it later.*/
-		ST.negative = highN&0x80 == 0;
+		ST.negative = highN&0x08 == 0;
 		ST.overflow = (highN<<4 ^ A) ^ (highN<<4 ^ m) & 0x80;
 		ST.zero = A + m + ST.carry == 0;
 		
@@ -180,8 +180,8 @@ void CPU::JMP(uint16_t loc) {
 void CPU::JSR(uint16_t loc) {
 	SP += 2;
 	//Store the stack pointer as little endian
-	mem[SP-1] = PC | 0xFF00;
-	mem[SP] = PC | 0x00FF;
+	mem[SP-1] = PC & 0xFF00;
+	mem[SP] = PC & 0x00FF;
 	PC = loc;
 }
 void CPU::RTS(uint8_t STAYYYYYNOIIIIIDED_YUHHHHHHHHHHHHHHH_IVE_SEEN_NOIDEDD_IVE_SEEEN_NOIIDDEDD__IVE_SEEN_NOIIDED__IVE__SEEN__IVVEEEEE__SEEEEENN__FOOTAAGGEEEEEEEEEEEEEEEEEEEEEE____) {

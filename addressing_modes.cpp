@@ -45,8 +45,12 @@ Was there a reason? I think I pulled an
 all nighter before I wrote this thing. I
 really hope there's not some deadly bug in
 this that is just waiting to be discovered...*/
+
+/*Although branching is supposed to add one
+to the program counter before branching, that
+is already done in the opcode switch case*/
 uint16_t CPU::AddrREL(int8_t arg) {
-	return PC + 1 + arg;
+	return PC + arg;
 }
 
 uint8_t& CPU::AddrZPG(uint8_t arg) {
