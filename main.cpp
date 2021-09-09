@@ -15,8 +15,11 @@ int main() {
 	cpu.jump(0xEA71);
 	
 	cpu.getMem()[0x6000] = 0x80;
-	for (uint64_t i = 0; i < 0x40 && cpu.getMem()[0x6000] >= 0x80; i++) {
+	for (uint64_t i = 0; cpu.getMem()[0x6000] >= 0x80; i++) {
 		std::cout << cpu;
+		std::cout << "Status code: " << std::hex << (int) cpu.getMem()[0x6000] <<
+		"\nInstruction number " << i;
+
 		cpu.executeCycle();
 	}
 } 

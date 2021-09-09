@@ -1,28 +1,43 @@
++: Indicates instruction executes properly
+-: Instruction doesn't run properly
+
  08AA71	A2 00       ldx #$00       +
  08AA73	BD 01 02    lda $0201,x    +
- 08AA76	8D 07 20    sta $2007
- 08AA79	E8          inx 
- 08AA7A	88          dey 
- 08AA7B	10 F6       bpl $08AA73	<Lbl_088000+10867>
- 08AA7D	A0 00       ldy #$00
- 08AA7F	F0 0D       beq $08AA8E	<Lbl_088000+10894>
- 08AA81	A9 20       lda #$20
- 08AA83	8D 07 20    sta $2007
- 08AA86	BD 01 02    lda $0201,x
- 08AA89	E8          inx 
- 08AA8A	99 01 02    sta $0201,y
- 08AA8D	C8          iny 
- 08AA8E	E0 1E       cpx #$1E
- 08AA90	D0 EF       bne $08AA81	<Lbl_088000+10881>
- 08AA92	A6 18       ldx $18
- 08AA94	84 18       sty $18
- 08AA96	A5 19       lda $19
- 08AA98	20 D9 EA    jsr $EAD9
+ 08AA76	8D 07 20    sta $2007      +
+ 08AA79	E8          inx            +
+ 08AA7A	88          dey 	       +
+ 08AA7B	10 F6       bpl $08AA73	<Lbl_088000+10867> +
+ 08AA7D	A0 00       ldy #$00				   +
+ 08AA7F	F0 0D       beq $08AA8E	<Lbl_088000+10894> +
+ 08AA81	A9 20       lda #$20        +
+ 08AA83	8D 07 20    sta $2007 	    +
+ 08AA86	BD 01 02    lda $0201,x     +
+ 08AA89	E8          inx             +
+ 08AA8A	99 01 02    sta $0201,y     +
+ 08AA8D	C8          iny             +
+ 08AA8E	E0 1E       cpx #$1E        +
+ 08AA90	D0 EF       bne $08AA81	<Lbl_088000+10881> +
+ 08AA92	A6 18       ldx $18	+
+ 08AA94	84 18       sty $18	+
+ 08AA96	A5 19       lda $19	+
+ 08AA98	20 D9 EA    jsr $EAD9	
  08AA9B	85 19       sta $19
  08AA9D	20 D9 EA    jsr $EAD9
  08AAA0	20 C4 EA    jsr $EAC4
  08AAA3	A0 1E       ldy #$1E
  08AAA5	A9 20       lda #$20
  08AAA7	8D 07 20    sta $2007
+ 
+ -------------------------------------
+ 
+ 08AAD9	C9 E8       cmp #$E8
+ 08AADB	90 02       bcc $08AADF	<Lbl_088000+10975>
+ 08AADD	69 0F       adc #$0F
+ 08AADF	69 08       adc #$08
+ 08AAE1	60          rts
 
 +: Indicates instruction executes properly
+-: Instruction doesn't run properly
+
+Left off at PC = 0xea92
+Number of successful instructions: 415
