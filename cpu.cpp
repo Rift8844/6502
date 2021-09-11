@@ -41,8 +41,8 @@ void CPU::executeCycle() {
 	lo-byte. When it is passed to the addressing mode
 	function, the lo-byte is shifted mem[PC] is shifted
 	<< 8 to the high digit. The hi-byte is then ORd |
-	to the low digit.
-	*/
+	to the low digit.*/
+
 	//LOAD OPCODES
 		//LDA
 		case 0xA9: {
@@ -787,6 +787,7 @@ void CPU::executeCycle() {
 		but nevertheless, it is an unnecessary
 		calculation in the code. Consider changing,
 		if appropriate.*/
+		
 		case 0x90: {
 			PC++;
 			BCC(AddrREL(mem[PC]));
@@ -906,7 +907,9 @@ void CPU::executeCycle() {
 		}
 
 		default: {
-			std::cerr << "Uknown opcode";
+			std::cerr << "Uknown opcode " << std::hex <<
+			(mem[PC+1]<<8 | mem[PC]) << std::endl;
+			throw std::exception();
 		}
 	}
 
