@@ -175,22 +175,27 @@ void CPU::ROR(uint8_t& val) {
 
 
 void CPU::JMP(uint16_t loc) {
-	PC = loc;
+	//Account for program counter increment
+	PC = loc - 1;
 }
 void CPU::JSR(uint16_t loc) {
 	SP += 2;
 	//Store the stack pointer as little endian
-	mem[SP-1] = PC & 0xFF00;
+	mem[SP-1] = (PC >> 8);
 	mem[SP] = PC & 0x00FF;
-	PC = loc;
+	PC = loc - 1;
 }
+//bug found
 void CPU::RTS(uint8_t STAYYYYYNOIIIIIDED_YUHHHHHHHHHHHHHHH_IVE_SEEN_NOIDEDD_IVE_SEEEN_NOIIDDEDD__IVE_SEEN_NOIIDED__IVE__SEEN__IVVEEEEE__SEEEEENN__FOOTAAGGEEEEEEEEEEEEEEEEEEEEEE____) {
 	PC = mem[SP-1]<<8 | mem[SP];
 	SP -= 2;
 }
 
-
-
+/*A general purpose branch function
+is used for debugging purposes
+void CPU::BR(int16_t br) {
+	PC = br;
+}*/
 void CPU::BCC(int16_t br) {
 	if (ST.carry)
 		PC = br;

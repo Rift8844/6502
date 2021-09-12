@@ -754,7 +754,7 @@ void CPU::executeCycle() {
 		//JMP
 		case 0x4C: {
 			PC += 2;
-			JMP(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			JMP(AddrABS_16b(mem[PC]<<8 | mem[PC-1]));
 			break;
 		}
 		case 0x6C: {
@@ -766,7 +766,7 @@ void CPU::executeCycle() {
 		//JSR
 		case 0x20: {
 			PC += 2;
-			JSR(AddrABS(mem[PC]<<8 | mem[PC-1]));
+			JSR(AddrABS_16b(mem[PC]<<8 | mem[PC-1]));
 			break;
 		}
 

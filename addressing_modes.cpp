@@ -1,7 +1,10 @@
 
 #include "cpu.h"
 
+
 uint8_t& CPU::AddrABS(uint16_t arg) { return mem[arg]; }
+uint16_t CPU::AddrABS_16b(uint16_t arg) { return arg; }
+
 //ABSX and ABSY
 uint8_t& CPU::AddrABSidx(uint16_t arg, uint8_t idx) {
 	//Wrap around while preserving the page

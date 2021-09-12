@@ -75,6 +75,11 @@ class CPU {
 	//Addressing mode implementations
 
 	uint8_t& AddrABS(uint16_t arg);
+	/*A second version of this addressing
+	mode is needed for jump instructions, because
+	jump instructions jump to an address, stored
+	immediately in thier opcode!*/
+	uint16_t AddrABS_16b(uint16_t arg);
 	//ABSX and ABY
 	uint8_t& AddrABSidx(uint16_t arg, uint8_t idx);
 	uint8_t& AddrABSX(uint16_t arg);
