@@ -29,15 +29,36 @@
  08AAA7	8D 07 20    sta $2007
  
  -------------------------------------
- 
- 08AAD9	C9 E8       cmp #$E8
- 08AADB	90 02       bcc $08AADF	<Lbl_088000+10975>
- 08AADD	69 0F       adc #$0F
- 08AADF	69 08       adc #$08
- 08AAE1	60          rts
+ 08AAD9	C9 E8       cmp #$E8        +
+ 08AADB	90 02       bcc $08AADF	<Lbl_088000+10975> +
+ 08AADD	69 0F       adc #$0F        +
+ 08AADF	69 08       adc #$08        +
+ 08AAE1	60          rts             +
+ ------------------------------------
+ 08AAC4    85 1A       sta $1A
+ 08AAC6 A9 08       lda #$08
+ 08AAC8 06 1A       asl $1A
+ 08AACA 2A          rol 
+ 08AACB 06 1A       asl $1A
+ 08AACD 2A          rol 
+ 08AACE 8D 06 20    sta $2006
+ 08AAD1 A5 1A       lda $1A
+ 08AAD3 09 01       ora #$01
+ 08AAD5 8D 06 20    sta $2006
+ 08AAD8 60          rts 
+ ------------------------------------
 
 +: Indicates instruction executes properly
 -: Instruction doesn't run properly
 
-Left off at PC = 0xea92
-Number of successful instructions: 415
+Left off at PC = 0xea97
+Number of instructions until crash: 48896!
+
+----------------------
+GDB commands to run:
+
+gdb 6502
+b main.cpp:23
+condition 1 cpu.getPC() == 0xea98
+r
+condition 1
